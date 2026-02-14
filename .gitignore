@@ -46,3 +46,8 @@ STM32CubeIDE/Debug/
 STM32CubeIDE/Release/
 
 .settings
+
+MDv6.log
+MDv6.ioc.bak
+MDv6.ioc.wb
+MDv6.settings
