@@ -13,11 +13,7 @@ You will need to install the following software:
 
 MCSDK includes a program called [Motor Control Workbench](https://wiki.st.com/stm32mcu/wiki/STM32MotorControl:STM32_MC_Workbench) for configuring MCSDK motor control parameters and generating a CubeMX-compatible project with all the motor control firmware code.
 
-The MC Workbench file `MDv6.stwb6` used to generate our project is included in the repo for reference. __*Do not*__ open this file in Motor Workbench if you want to edit the project configuration. You will end up generating code for a new project in a separate folder. Instead, open the `MDv6.ioc` file in Motor Workbench. This will overwrite the existing project.
-
-## Project Documentation
-
-### Generated Code
+## Generated Code
 
 Most of the firmware code is generated for us by STM32CubeMX and MC Workbench. This includes initialization code for setting up the MCU and peripherals, as well as the actual motor control code that uses MCSDK libraries.
 
@@ -26,7 +22,19 @@ The MCSDK firmware is documented in [UM1052](https://www.st.com/resource/zh/user
 > [!IMPORTANT]
 > **Only write code between the user section comments in any generated files.** This ensures that our custom user code will not be deleted/modified when we regenerate project code. Generally, you should not edit generated files directly; edit the project configuration instead and regenerate the project code.
 
-### SPI Interface Code
+### Using MC Workbench
+
+The MC Workbench file `MDv6.stwb6` used to generate our project is included in the repo. If you open this file in MC Workbench to edit parameters and regenerate the project, **you will end up generating code for a new project in a separate folder named `MDv6`.** Instead, try opening the `MDv6.ioc` file in MC Workbench and see if you can edit your desired parameters there. Then, when you go to generate the project, this will overwrite the existing project rather than create a new project.
+
+Note that after a project is generated using the `MDv6.stwb6` file, all hardware parameters are frozen (e.g. power stage parameters). This means that some parameters are not editable via opening the `MDv6.ioc` (even if it looks like you can via the Workbench UI... when you go to generate the project, your parameter changes won't appear in the code). In case you need to edit these locked parameters, you'll need to: 
+
+1. Open the `MDv6.stwb6` file with MC Workbench and edit the params
+2. Generate the project (the generate project will appear in a separate folder named `MDv6`)
+3. Replace the contents of the repo with the generated project's contents
+4. Manually determine what changes need to be kept/discarded (highly recommend using some Git GUI tool). Be careful with the `MDv6.ioc` file and make sure that our custom pinout / SPI and DMA initialization doesn't get deleted.
+
+
+## SPI Interface
 
 The part of the firmware that we have implemented ourselves is the SPI interface module (`Inc/interface.h`, `Src/interface.c`) for communicating with the MD boards over SPI. This module implements a simple SPI protocol for controlling the motor. The master (i.e. robot's Raspberry Pi) can send commands to set the target speed or torque, configure parameters, and select the type of telemetry response. The slave (this firmware) processes the commands and responds with telemetry data.
 
