@@ -1072,7 +1072,7 @@
         "samplingTime": "Number.NaN",
         "adc_freq": "Number.NaN",
         "enableSensing": true,
-        "busVoltageDivider": 19.011
+        "busVoltageDivider": 14.82
       },
       "temperatureSensing_0": {
         "hw": {
@@ -1147,7 +1147,7 @@
             "P": "Number.NaN",
             "I": "Number.NaN"
           },
-          "cutOffFrequency": "Number.NaN",
+          "cutOffFrequency": 1500,
           "useMTPA": false,
           "feedForward": true,
           "MTPATarget": "Number.NaN"

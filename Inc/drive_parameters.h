@@ -64,11 +64,11 @@
 #define PID_FLUX_KD_DEFAULT                 100
 
 /* Torque/Flux control loop gains dividers*/
-#define TF_KPDIV                            1024
-#define TF_KIDIV                            2048
+#define TF_KPDIV                            4096
+#define TF_KIDIV                            8192
 #define TF_KDDIV                            8192
-#define TF_KPDIV_LOG                        LOG2((1024))
-#define TF_KIDIV_LOG                        LOG2((2048))
+#define TF_KPDIV_LOG                        LOG2((4096))
+#define TF_KIDIV_LOG                        LOG2((8192))
 #define TF_KDDIV_LOG                        LOG2((8192))
 #define TFDIFFERENTIAL_TERM_ENABLING        DISABLE
 
@@ -131,9 +131,9 @@
 
 /*  Feed-forward parameters */
 #define FEED_FORWARD_CURRENT_REG_ENABLING ENABLE
-#define M1_CONSTANT1_Q                      70464
-#define M1_CONSTANT1_D                      70464
-#define M1_CONSTANT2_QD                     3560
+#define M1_CONSTANT1_Q                      90391
+#define M1_CONSTANT1_D                      90391
+#define M1_CONSTANT2_QD                     4567
 
 /*** On the fly start-up ***/
 

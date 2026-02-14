@@ -60,9 +60,9 @@
         <define key="M1_BOARD_MAX_CURRENT" value="9.5" />
         <define key="M1_BUS_VOLTAGE_READING" value="ENABLE" />
         <define key="M1_COMMUTATION_STEP_TIME_BUF_SIZE" value="12" />
-        <define key="M1_CONSTANT1_D" value="70464" />
-        <define key="M1_CONSTANT1_Q" value="70464" />
-        <define key="M1_CONSTANT2_QD" value="3560" />
+        <define key="M1_CONSTANT1_D" value="90391" />
+        <define key="M1_CONSTANT1_Q" value="90391" />
+        <define key="M1_CONSTANT2_QD" value="4567" />
         <define key="M1_CS_ADC_NUM" value="1" />
         <define key="M1_CS_ADC_PHASE_SHARED" value="NONE" />
         <define key="M1_CS_ADC_U" value="ADC" />
@@ -159,8 +159,8 @@
         <define key="M1_SW_DEADTIME_NS" value="600" />
         <define key="M1_TEMPERATURE_READING" value="DISABLE" />
         <define key="M1_TF_KDDIV" value="8192" />
-        <define key="M1_TF_KIDIV" value="2048" />
-        <define key="M1_TF_KPDIV" value="1024" />
+        <define key="M1_TF_KIDIV" value="8192" />
+        <define key="M1_TF_KPDIV" value="4096" />
         <define key="M1_TNOISE_NS" value="1200" />
         <define key="M1_TRISE_NS" value="1200" />
         <define key="M1_UD_VOLTAGE_THRESHOLD_V" value="20" />
@@ -169,7 +169,7 @@
         <define key="M1_VBUS_ADC" value="ADC" />
         <define key="M1_VBUS_ADC_SAMPLING_TIME" value="28" />
         <define key="M1_VBUS_CHANNEL" value="ADC_Channel_9" />
-        <define key="M1_VBUS_PARTITIONING_FACTOR" value="0.05260112566408921" />
+        <define key="M1_VBUS_PARTITIONING_FACTOR" value="0.06747638326585695" />
         <define key="MAX_READABLE_CURRENT" value="30.03" />
         <define key="MC_WORKBENCH_VERSION" value="6.4.1" />
         <define key="MCP_EN" value="FALSE" />
@@ -239,7 +239,7 @@
         <define key="WB_MX_HEAPSIZE" value="0x80" />
         <define key="WB_MX_STACKSIZE" value="0x400" />
         <define key="WB_MX_TRUSTZONE_AVAILABLE" value="FALSE" />
-        <define key="WB_UI_CUTOFF_FREQUENCY" value="6000" />
+        <define key="WB_UI_CUTOFF_FREQUENCY" value="1500" />
         <define key="WB_UI_ENCODER_HAS_INDEX_PIN" value="FALSE" />
         <define key="WB_UI_FLUX_TARGET" value="0" />
         <define key="WB_UI_FRICTION" value="14" />
