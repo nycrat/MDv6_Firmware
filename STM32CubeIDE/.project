@@ -36,9 +36,19 @@
 			<locationURI>PARENT-1-PROJECT_LOC/MDv6.ioc</locationURI>
 		</link>
 		<link>
+			<name>Application/User/crc.c</name>
+			<type>1</type>
+			<location>C:/Users/willi/MDv6_Firmware/Src/crc.c</location>
+		</link>
+		<link>
 			<name>Application/User/hall_speed_pos_fdbk.c</name>
 			<type>1</type>
 			<locationURI>PARENT-1-PROJECT_LOC/Src/hall_speed_pos_fdbk.c</locationURI>
+		</link>
+		<link>
+			<name>Application/User/interface.c</name>
+			<type>1</type>
+			<location>C:/Users/willi/MDv6_Firmware/Src/interface.c</location>
 		</link>
 		<link>
 			<name>Application/User/main.c</name>
