@@ -38,7 +38,7 @@
 		<link>
 			<name>Application/User/crc.c</name>
 			<type>1</type>
-			<location>C:/Users/willi/MDv6_Firmware/Src/crc.c</location>
+			<location>PARENT-1-PROJECT_LOC/Src/crc.c</location>
 		</link>
 		<link>
 			<name>Application/User/hall_speed_pos_fdbk.c</name>
@@ -48,7 +48,7 @@
 		<link>
 			<name>Application/User/interface.c</name>
 			<type>1</type>
-			<location>C:/Users/willi/MDv6_Firmware/Src/interface.c</location>
+			<location>PARENT-1-PROJECT_LOC/Src/interface.c</location>
 		</link>
 		<link>
 			<name>Application/User/main.c</name>
