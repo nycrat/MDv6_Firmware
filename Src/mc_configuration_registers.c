@@ -52,7 +52,7 @@ static const ApplicationConfig_reg_t M1_ApplicationConfig_reg =
 static const MotorConfig_reg_t M1_MotorConfig_reg =
 {
   .polePairs  = 8,
-  .ratedFlux  = 3.8,
+  .ratedFlux  = 2.7,
   .rs         = 0.61,
   .ls         = 0.00022*1.000,
   .ld         = 0.00022,

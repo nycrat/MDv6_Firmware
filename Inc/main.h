@@ -66,8 +66,8 @@ void Error_Handler(void);
 #define M1_HALL_H2_GPIO_Port GPIOA
 #define M1_HALL_H3_Pin GPIO_PIN_2
 #define M1_HALL_H3_GPIO_Port GPIOA
-#define MD_DEBUG_LEG_Pin GPIO_PIN_4
-#define MD_DEBUG_LEG_GPIO_Port GPIOA
+#define MD_DEBUG_LED_Pin GPIO_PIN_4
+#define MD_DEBUG_LED_GPIO_Port GPIOA
 #define M1_CURR_AMPL_Pin GPIO_PIN_5
 #define M1_CURR_AMPL_GPIO_Port GPIOA
 #define M1_BUS_VOLTAGE_Pin GPIO_PIN_1

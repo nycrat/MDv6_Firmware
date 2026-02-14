@@ -51,3 +51,7 @@ MDv6.log
 MDv6.ioc.bak
 MDv6.ioc.wb
 MDv6.settings
+
+# Project generated in separate folder by MC Workbench 
+# when using MDv6.stwb6 project file 
+MDv6/

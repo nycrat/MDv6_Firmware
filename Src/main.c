@@ -462,17 +462,17 @@ static void MX_GPIO_Init(void)
   __HAL_RCC_GPIOB_CLK_ENABLE();
 
   /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(MD_DEBUG_LEG_GPIO_Port, MD_DEBUG_LEG_Pin, GPIO_PIN_RESET);
+  HAL_GPIO_WritePin(MD_DEBUG_LED_GPIO_Port, MD_DEBUG_LED_Pin, GPIO_PIN_RESET);
 
   /*Configure GPIO pin Output Level */
   HAL_GPIO_WritePin(MD_ENABLE_GPIO_Port, MD_ENABLE_Pin, GPIO_PIN_SET);
 
-  /*Configure GPIO pin : MD_DEBUG_LEG_Pin */
-  GPIO_InitStruct.Pin = MD_DEBUG_LEG_Pin;
+  /*Configure GPIO pin : MD_DEBUG_LED_Pin */
+  GPIO_InitStruct.Pin = MD_DEBUG_LED_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
-  HAL_GPIO_Init(MD_DEBUG_LEG_GPIO_Port, &GPIO_InitStruct);
+  HAL_GPIO_Init(MD_DEBUG_LED_GPIO_Port, &GPIO_InitStruct);
 
   /*Configure GPIO pin : MD_ENABLE_Pin */
   GPIO_InitStruct.Pin = MD_ENABLE_Pin;

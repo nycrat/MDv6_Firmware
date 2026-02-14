@@ -1,5 +1,5 @@
 {
-  "version": 8,
+  "version": 13,
   "algorithm": "FOC",
   "description": "Driving wheel motors with hall sensors.",
   "workBenchVersion": "6.4.1",
@@ -116,358 +116,6 @@
         "sixStep"
       ]
     },
-    "power": [
-      {
-        "motorDrives": [
-          {
-            "name": "M1",
-            "minRatedVoltage": 20,
-            "maxRatedVoltage": 164,
-            "maxRatedCurrent": 16.6,
-            "connectorType": "None",
-            "features": [
-              {
-                "name": "CurrentSensing",
-                "type": "CurrentSensing",
-                "tRise": 1200,
-                "hwVariants": [
-                  {
-                    "type": "SingleShunt_AmplifiedCurrents",
-                    "help": "For FOC R39 and R104 must be mounted",
-                    "signals": {
-                      "CURRENT_AMPL": [
-                        {
-                          "name": "PA5",
-                          "help": "FOC Configuration requires Soldering of R39 and R104 of 20K",
-                          "cost": 10
-                        }
-                      ]
-                    },
-                    "shuntResistor": 0.025,
-                    "amplifyingNetworkImax": 19.82,
-                    "amplifyingNetworkVm": 3.3,
-                    "amplifyingNetworkPrating": 6,
-                    "offsetNetworkAttenuation": 0.769,
-                    "opAmpGain": 4.33,
-                    "polarizationOffset": 1.65
-                  },
-                  {
-                    "type": "SingleShunt_AmplifiedCurrents_noOffset",
-                    "help": "For 6 steps do not mount R39 and R104",
-                    "signals": {
-                      "CURRENT_AMPL": [
-                        {
-                          "name": "PA5",
-                          "help": "6 steps configuration by default",
-                          "cost": 0
-                        }
-                      ]
-                    },
-                    "shuntResistor": 0.025,
-                    "amplifyingNetworkImax": 15.49,
-                    "amplifyingNetworkVm": 3.3,
-                    "amplifyingNetworkPrating": 6,
-                    "opAmpGain": 4.33
-                  }
-                ]
-              },
-              {
-                "name": "PhaseVoltageGeneration",
-                "type": "PhaseVoltageGeneration",
-                "driverName": "STSPIN32F0251_DRIVER",
-                "driverPN": "STSPIN32F0251_DRIVER",
-                "minDeadTime": 500,
-                "maxSwitchingFreq": 100,
-                "tNoise": 1200,
-                "hwVariants": [
-                  {
-                    "type": "PoweringHighAndLowSides",
-                    "help": "How to enable this variant",
-                    "signals": {
-                      "GD_CHU_H": [
-                        {
-                          "name": "HVG1",
-                          "help": "",
-                          "cost": 0
-                        }
-                      ],
-                      "GD_CHV_H": [
-                        {
-                          "name": "HVG2",
-                          "help": "",
-                          "cost": 0
-                        }
-                      ],
-                      "GD_CHW_H": [
-                        {
-                          "name": "HVG3",
-                          "help": "",
-                          "cost": 0
-                        }
-                      ],
-                      "GD_CHU_L": [
-                        {
-                          "name": "LVG1",
-                          "help": "",
-                          "cost": 0
-                        }
-                      ],
-                      "GD_CHV_L": [
-                        {
-                          "name": "LVG2",
-                          "help": "",
-                          "cost": 0
-                        }
-                      ],
-                      "GD_CHW_L": [
-                        {
-                          "name": "LVG3",
-                          "help": "",
-                          "cost": 0
-                        }
-                      ]
-                    },
-                    "deadTime": 700
-                  }
-                ]
-              },
-              {
-                "name": "OverCurrentProtection",
-                "type": "OverCurrentProtection",
-                "hwVariants": [
-                  {
-                    "type": "SingleInput_RawCurrents_Protection_IntRef",
-                    "help": "How to enable this variant",
-                    "signals": {
-                      "CURRENT_INPUT_P": [
-                        {
-                          "name": "CIN",
-                          "help": "",
-                          "cost": 0
-                        }
-                      ]
-                    },
-                    "OCComparatorThreshold": 0.46,
-                    "OCSignalPolarity": "Active low",
-                    "OCNetworkOffset": 0.051,
-                    "OCNetworkGain": 0.025
-                  }
-                ]
-              },
-              {
-                "name": "CurrentLimiter",
-                "type": "CurrentLimiter",
-                "hwVariants": [
-                  {
-                    "type": "ExternalCurrentLimiter_PWM",
-                    "help": "How to enable this variant",
-                    "signals": {
-                      "PWM_REF": [
-                        {
-                          "name": "PA6",
-                          "help": "",
-                          "cost": 0
-                        }
-                      ],
-                      "HF_ETR": [
-                        {
-                          "name": "PA12",
-                          "help": "",
-                          "cost": 0
-                        }
-                      ]
-                    },
-                    "PWMDefaultFreq": 60000,
-                    "PWMRefDivider": 1.0033,
-                    "ETRPolarity": "Active high"
-                  }
-                ]
-              },
-              {
-                "name": "SpeedAndPositionSensing",
-                "type": "SpeedAndPositionSensing",
-                "hwVariants": [
-                  {
-                    "type": "HallEffectSensor",
-                    "help": "JP 10 selects the sensors power supply",
-                    "signals": {
-                      "HALLSENSOR_H1": [
-                        {
-                          "name": "PA0",
-                          "help": "JP6 pins 2-3 must be closed",
-                          "cost": 10
-                        }
-                      ],
-                      "HALLSENSOR_H2": [
-                        {
-                          "name": "PA1",
-                          "help": "JP7 pins 2-3 must be closed",
-                          "cost": 10
-                        }
-                      ],
-                      "HALLSENSOR_H3": [
-                        {
-                          "name": "PA2",
-                          "help": "JP8 pins 2-3 must be closed",
-                          "cost": 10
-                        }
-                      ]
-                    }
-                  },
-                  {
-                    "type": "QuadratureEncoderRelative",
-                    "help": "JP 10 selects the sensors power supply",
-                    "signals": {
-                      "QENC_A": [
-                        {
-                          "name": "PA0",
-                          "help": "JP6 pins 2-3 must be closed",
-                          "cost": 10
-                        }
-                      ],
-                      "QENC_B": [
-                        {
-                          "name": "PA1",
-                          "help": "JP7 pins 2-3 must be closed",
-                          "cost": 10
-                        }
-                      ]
-                    }
-                  },
-                  {
-                    "type": "QuadratureEncoderAbsolute",
-                    "help": "JP 10 selects the sensors power supply",
-                    "signals": {
-                      "QENC_A": [
-                        {
-                          "name": "PA0",
-                          "help": "JP6 pins 2-3 must be closed",
-                          "cost": 10
-                        }
-                      ],
-                      "QENC_B": [
-                        {
-                          "name": "PA1",
-                          "help": "JP7 pins 2-3 must be closed",
-                          "cost": 10
-                        }
-                      ],
-                      "QENC_Z": [
-                        {
-                          "name": "PA2",
-                          "help": "JP8 pins 2-3 must be closed",
-                          "cost": 10
-                        }
-                      ]
-                    }
-                  },
-                  {
-                    "type": "BEMFSensingADC",
-                    "help": "enabled by default",
-                    "signals": {
-                      "BEMF_U": [
-                        {
-                          "name": "PA0",
-                          "help": "JP6 pins 2-4 closed",
-                          "cost": 0
-                        }
-                      ],
-                      "BEMF_V": [
-                        {
-                          "name": "PA1",
-                          "help": "JP7 pins 2-4 closed",
-                          "cost": 0
-                        }
-                      ],
-                      "BEMF_W": [
-                        {
-                          "name": "PA2",
-                          "help": "JP8 pins 2-4 closed",
-                          "cost": 0
-                        }
-                      ],
-                      "BEMF_DIVIDER": [
-                        {
-                          "name": "PC13",
-                          "help": "",
-                          "cost": 0
-                        }
-                      ]
-                    },
-                    "dividingNetworkR1": 95000,
-                    "dividingNetworkR2": 1500
-                  }
-                ]
-              },
-              {
-                "name": "VBusSensing",
-                "type": "VBusSensing",
-                "busVoltageDivider": 49.64,
-                "hwVariants": [
-                  {
-                    "type": "VBusSensing",
-                    "help": "",
-                    "signals": {
-                      "VBUS": [
-                        {
-                          "name": "PB1",
-                          "help": "",
-                          "cost": 0
-                        }
-                      ]
-                    },
-                    "busVoltageDivider": 49.64,
-                    "busVoltageDividerR1": 940,
-                    "busVoltageDividerR2": 68,
-                    "busVoltageDividerR3": 27
-                  }
-                ]
-              },
-              {
-                "name": "TemperatureSensing",
-                "type": "TemperatureSensing",
-                "hwVariants": [
-                  {
-                    "type": "NTCThermistor",
-                    "help": "How to enable this variant",
-                    "signals": {
-                      "TEMPERATURE_NTC": [
-                        {
-                          "name": "PB0",
-                          "help": "NTC not mounted by default",
-                          "cost": 10
-                        }
-                      ]
-                    },
-                    "v0": 1055,
-                    "t0": 25,
-                    "gain": 22.7,
-                    "maxSensorTemperature": 85
-                  }
-                ]
-              }
-            ],
-            "compatibility": [
-              "FOC",
-              "sixStep"
-            ]
-          }
-        ],
-        "connectorTypes": [
-          "None"
-        ],
-        "hardwareFamily": "POWER",
-        "id": "EVSPIN32F0251S1",
-        "label": "EVSPIN32F0251S1",
-        "description": "3-phase inverter based on STSPIN32F0251 with single-shunt topology",
-        "descVersion": 4,
-        "contentVersion": "1.0",
-        "compatibility": [
-          "FOC",
-          "sixStep"
-        ]
-      }
-    ],
     "motor": [
       {
         "label": "DF45L024048-A2",
@@ -986,13 +634,365 @@
         }
       ]
     },
+    "power": [
+      {
+        "motorDrives": [
+          {
+            "name": "M1",
+            "minRatedVoltage": 20,
+            "maxRatedVoltage": 164,
+            "maxRatedCurrent": 16.6,
+            "connectorType": "None",
+            "features": [
+              {
+                "name": "CurrentSensing",
+                "type": "CurrentSensing",
+                "tRise": 1200,
+                "hwVariants": [
+                  {
+                    "type": "SingleShunt_AmplifiedCurrents",
+                    "help": "For FOC R39 and R104 must be mounted",
+                    "signals": {
+                      "CURRENT_AMPL": [
+                        {
+                          "name": "PA5",
+                          "help": "FOC Configuration requires Soldering of R39 and R104 of 20K",
+                          "cost": 10
+                        }
+                      ]
+                    },
+                    "shuntResistor": 0.025,
+                    "amplifyingNetworkImax": 19.82,
+                    "amplifyingNetworkVm": 3.3,
+                    "amplifyingNetworkPrating": 6,
+                    "offsetNetworkAttenuation": 0.769,
+                    "opAmpGain": 4.33,
+                    "polarizationOffset": 1.65
+                  },
+                  {
+                    "type": "SingleShunt_AmplifiedCurrents_noOffset",
+                    "help": "For 6 steps do not mount R39 and R104",
+                    "signals": {
+                      "CURRENT_AMPL": [
+                        {
+                          "name": "PA5",
+                          "help": "6 steps configuration by default",
+                          "cost": 0
+                        }
+                      ]
+                    },
+                    "shuntResistor": 0.025,
+                    "amplifyingNetworkImax": 15.49,
+                    "amplifyingNetworkVm": 3.3,
+                    "amplifyingNetworkPrating": 6,
+                    "opAmpGain": 4.33
+                  }
+                ]
+              },
+              {
+                "name": "PhaseVoltageGeneration",
+                "type": "PhaseVoltageGeneration",
+                "driverName": "STSPIN32F0251_DRIVER",
+                "driverPN": "STSPIN32F0251_DRIVER",
+                "minDeadTime": 500,
+                "maxSwitchingFreq": 100,
+                "tNoise": 1200,
+                "hwVariants": [
+                  {
+                    "type": "PoweringHighAndLowSides",
+                    "help": "How to enable this variant",
+                    "signals": {
+                      "GD_CHU_H": [
+                        {
+                          "name": "HVG1",
+                          "help": "",
+                          "cost": 0
+                        }
+                      ],
+                      "GD_CHV_H": [
+                        {
+                          "name": "HVG2",
+                          "help": "",
+                          "cost": 0
+                        }
+                      ],
+                      "GD_CHW_H": [
+                        {
+                          "name": "HVG3",
+                          "help": "",
+                          "cost": 0
+                        }
+                      ],
+                      "GD_CHU_L": [
+                        {
+                          "name": "LVG1",
+                          "help": "",
+                          "cost": 0
+                        }
+                      ],
+                      "GD_CHV_L": [
+                        {
+                          "name": "LVG2",
+                          "help": "",
+                          "cost": 0
+                        }
+                      ],
+                      "GD_CHW_L": [
+                        {
+                          "name": "LVG3",
+                          "help": "",
+                          "cost": 0
+                        }
+                      ]
+                    },
+                    "deadTime": 700
+                  }
+                ]
+              },
+              {
+                "name": "OverCurrentProtection",
+                "type": "OverCurrentProtection",
+                "hwVariants": [
+                  {
+                    "type": "SingleInput_RawCurrents_Protection_IntRef",
+                    "help": "How to enable this variant",
+                    "signals": {
+                      "CURRENT_INPUT_P": [
+                        {
+                          "name": "CIN",
+                          "help": "",
+                          "cost": 0
+                        }
+                      ]
+                    },
+                    "OCComparatorThreshold": 0.46,
+                    "OCSignalPolarity": "Active low",
+                    "OCNetworkOffset": 0.051,
+                    "OCNetworkGain": 0.025
+                  }
+                ]
+              },
+              {
+                "name": "CurrentLimiter",
+                "type": "CurrentLimiter",
+                "hwVariants": [
+                  {
+                    "type": "ExternalCurrentLimiter_PWM",
+                    "help": "How to enable this variant",
+                    "signals": {
+                      "PWM_REF": [
+                        {
+                          "name": "PA6",
+                          "help": "",
+                          "cost": 0
+                        }
+                      ],
+                      "HF_ETR": [
+                        {
+                          "name": "PA12",
+                          "help": "",
+                          "cost": 0
+                        }
+                      ]
+                    },
+                    "PWMDefaultFreq": 60000,
+                    "PWMRefDivider": 1.0033,
+                    "ETRPolarity": "Active high"
+                  }
+                ]
+              },
+              {
+                "name": "SpeedAndPositionSensing",
+                "type": "SpeedAndPositionSensing",
+                "hwVariants": [
+                  {
+                    "type": "HallEffectSensor",
+                    "help": "JP 10 selects the sensors power supply",
+                    "signals": {
+                      "HALLSENSOR_H1": [
+                        {
+                          "name": "PA0",
+                          "help": "JP6 pins 2-3 must be closed",
+                          "cost": 10
+                        }
+                      ],
+                      "HALLSENSOR_H2": [
+                        {
+                          "name": "PA1",
+                          "help": "JP7 pins 2-3 must be closed",
+                          "cost": 10
+                        }
+                      ],
+                      "HALLSENSOR_H3": [
+                        {
+                          "name": "PA2",
+                          "help": "JP8 pins 2-3 must be closed",
+                          "cost": 10
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "type": "QuadratureEncoderRelative",
+                    "help": "JP 10 selects the sensors power supply",
+                    "signals": {
+                      "QENC_A": [
+                        {
+                          "name": "PA0",
+                          "help": "JP6 pins 2-3 must be closed",
+                          "cost": 10
+                        }
+                      ],
+                      "QENC_B": [
+                        {
+                          "name": "PA1",
+                          "help": "JP7 pins 2-3 must be closed",
+                          "cost": 10
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "type": "QuadratureEncoderAbsolute",
+                    "help": "JP 10 selects the sensors power supply",
+                    "signals": {
+                      "QENC_A": [
+                        {
+                          "name": "PA0",
+                          "help": "JP6 pins 2-3 must be closed",
+                          "cost": 10
+                        }
+                      ],
+                      "QENC_B": [
+                        {
+                          "name": "PA1",
+                          "help": "JP7 pins 2-3 must be closed",
+                          "cost": 10
+                        }
+                      ],
+                      "QENC_Z": [
+                        {
+                          "name": "PA2",
+                          "help": "JP8 pins 2-3 must be closed",
+                          "cost": 10
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "type": "BEMFSensingADC",
+                    "help": "enabled by default",
+                    "signals": {
+                      "BEMF_U": [
+                        {
+                          "name": "PA0",
+                          "help": "JP6 pins 2-4 closed",
+                          "cost": 0
+                        }
+                      ],
+                      "BEMF_V": [
+                        {
+                          "name": "PA1",
+                          "help": "JP7 pins 2-4 closed",
+                          "cost": 0
+                        }
+                      ],
+                      "BEMF_W": [
+                        {
+                          "name": "PA2",
+                          "help": "JP8 pins 2-4 closed",
+                          "cost": 0
+                        }
+                      ],
+                      "BEMF_DIVIDER": [
+                        {
+                          "name": "PC13",
+                          "help": "",
+                          "cost": 0
+                        }
+                      ]
+                    },
+                    "dividingNetworkR1": 95000,
+                    "dividingNetworkR2": 1500
+                  }
+                ]
+              },
+              {
+                "name": "VBusSensing",
+                "type": "VBusSensing",
+                "busVoltageDivider": 49.64,
+                "hwVariants": [
+                  {
+                    "type": "VBusSensing",
+                    "help": "",
+                    "signals": {
+                      "VBUS": [
+                        {
+                          "name": "PB1",
+                          "help": "",
+                          "cost": 0
+                        }
+                      ]
+                    },
+                    "busVoltageDivider": 49.64,
+                    "busVoltageDividerR1": 940,
+                    "busVoltageDividerR2": 68,
+                    "busVoltageDividerR3": 27
+                  }
+                ]
+              },
+              {
+                "name": "TemperatureSensing",
+                "type": "TemperatureSensing",
+                "hwVariants": [
+                  {
+                    "type": "NTCThermistor",
+                    "help": "How to enable this variant",
+                    "signals": {
+                      "TEMPERATURE_NTC": [
+                        {
+                          "name": "PB0",
+                          "help": "NTC not mounted by default",
+                          "cost": 10
+                        }
+                      ]
+                    },
+                    "v0": 1055,
+                    "t0": 25,
+                    "gain": 22.7,
+                    "maxSensorTemperature": 85
+                  }
+                ]
+              }
+            ],
+            "compatibility": [
+              "FOC",
+              "sixStep"
+            ]
+          }
+        ],
+        "connectorTypes": [
+          "None"
+        ],
+        "hardwareFamily": "POWER",
+        "id": "EVSPIN32F0251S1",
+        "label": "EVSPIN32F0251S1",
+        "description": "3-phase inverter based on STSPIN32F0251 with single-shunt topology",
+        "descVersion": 4,
+        "contentVersion": "1.0",
+        "compatibility": [
+          "FOC",
+          "sixStep"
+        ]
+      }
+    ],
     "inverter": {
+      "descVersion": 4,
+      "contentVersion": "1.0",
       "hardwareFamily": "INVERTER",
       "id": "EVSPIN32F0251S1",
       "label": "EVSPIN32F0251S1",
       "description": "3-phase inverter based on STSPIN32F0251 with single-shunt topology",
-      "descVersion": 4,
-      "contentVersion": "1.0",
       "compatibility": [
         "FOC",
         "sixStep"
@@ -1024,8 +1024,8 @@
           "ampMode": "",
           "sensing": {
             "amplification": "external",
-            "shuntResistor": "Number.NaN",
-            "gain": "Number.NaN",
+            "shuntResistor": 0.015,
+            "gain": 3.663,
             "tNoise": "Number.NaN",
             "tRise": "Number.NaN",
             "maxModulation": "Number.NaN",
@@ -1069,10 +1069,10 @@
           "r3": "Number.NaN",
           "busVoltDiv": "Number.NaN"
         },
-        "samplingTime": 13.5,
+        "samplingTime": "Number.NaN",
         "adc_freq": "Number.NaN",
         "enableSensing": true,
-        "busVoltageDivider": "Number.NaN"
+        "busVoltageDivider": 19.011
       },
       "temperatureSensing_0": {
         "hw": {
@@ -1092,7 +1092,7 @@
       },
       "motor_0": {
         "label": "",
-        "description": "",
+        "description": "Nanotec DF45L024048-A2 BLDC",
         "polePairs": "Number.NaN",
         "mmsType": "",
         "rs": "Number.NaN",
@@ -1100,7 +1100,7 @@
         "mmsLd_lq_ratio": "Number.NaN",
         "maxCurrent": "Number.NaN",
         "maxDCVoltage": "Number.NaN",
-        "BEmfConstant": "Number.NaN",
+        "BEmfConstant": 2.74,
         "inertia": "Number.NaN",
         "friction": "Number.NaN",
         "maxRatedSpeed": "Number.NaN",
