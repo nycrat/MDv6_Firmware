@@ -88,17 +88,17 @@ void Interface_Loop(void)
 
   while (1) 
   {		
-		if (txrx_half_completed) 
+    if (txrx_half_completed) 
     {
-			ProcessSpiTransaction(rx_bufs[0], tx_bufs[0]);
-			txrx_half_completed = false;
-		}
-		if (txrx_completed) 
+      ProcessSpiTransaction(rx_bufs[0], tx_bufs[0]);
+      txrx_half_completed = false;
+    }
+    if (txrx_completed) 
     {
-			ProcessSpiTransaction(rx_bufs[1], tx_bufs[1]);
-			txrx_completed = false;
-		}
-	}
+      ProcessSpiTransaction(rx_bufs[1], tx_bufs[1]);
+      txrx_completed = false;
+    }
+  }
 }
 
 /**
@@ -111,48 +111,48 @@ void Interface_Loop(void)
  */
 void ProcessSpiTransaction(uint8_t *rx, uint8_t *tx) 
 {
-	uint8_t rx_copy[FRAME_SIZE];
-	memcpy(rx_copy, rx, FRAME_SIZE);
+  uint8_t rx_copy[FRAME_SIZE];
+  memcpy(rx_copy, rx, FRAME_SIZE);
 
-	/* Frame integrity check */
-	if (rx_copy[5] == CrcGenerateChecksum(rx_copy, FRAME_SIZE - 1)) 
+  /* Frame integrity check */
+  if (rx_copy[5] == CrcGenerateChecksum(rx_copy, FRAME_SIZE - 1)) 
   {
-		const Opcode_t opcode = rx_copy[0];
+    const Opcode_t opcode = rx_copy[0];
 
-		switch (opcode) 
+    switch (opcode) 
     {
-			case NO_OP:
-				break;
-			case SET_TARGET_SPEED:
-				ProcessRx_SetTargetSpeed(rx_copy);
-				break;
-			case SET_TARGET_TORQUE:
-				ProcessRx_SetTargetTorque(rx_copy);
-				break;
-			case SET_RESPONSE_TYPE:
-				ProcessRx_SetResponseType(rx_copy);
-				break;
-			case SET_PID_TORQUE_KP_KI:
-				ProcessRx_SetPidTorqueKpKi(rx_copy);
-				break;
-			case SET_PID_FLUX_KP_KI:
-				ProcessRx_SetPidFluxKpKi(rx_copy);
-				break;
-			case SET_PID_SPEED_KP_KI:
-				ProcessRx_SetPidSpeedKpKi(rx_copy);
-				break;
-		}
-	}
+      case NO_OP:
+        break;
+      case SET_TARGET_SPEED:
+        ProcessRx_SetTargetSpeed(rx_copy);
+        break;
+      case SET_TARGET_TORQUE:
+        ProcessRx_SetTargetTorque(rx_copy);
+        break;
+      case SET_RESPONSE_TYPE:
+        ProcessRx_SetResponseType(rx_copy);
+        break;
+      case SET_PID_TORQUE_KP_KI:
+        ProcessRx_SetPidTorqueKpKi(rx_copy);
+        break;
+      case SET_PID_FLUX_KP_KI:
+        ProcessRx_SetPidFluxKpKi(rx_copy);
+        break;
+      case SET_PID_SPEED_KP_KI:
+        ProcessRx_SetPidSpeedKpKi(rx_copy);
+        break;
+    }
+  }
 
-	switch (response_type) 
+  switch (response_type) 
   {
-		case SPEED_AND_FAULTS:
-			PopulateTx_ResponseSpeedAndFaults(tx);
-			break;
-		case IQ_AND_ID:
-			PopulateTx_ResponseIqAndId(tx);
-			break;
-	}
+    case SPEED_AND_FAULTS:
+      PopulateTx_ResponseSpeedAndFaults(tx);
+      break;
+    case IQ_AND_ID:
+      PopulateTx_ResponseIqAndId(tx);
+      break;
+  }
 }
 
 /**
@@ -166,9 +166,9 @@ void ProcessSpiTransaction(uint8_t *rx, uint8_t *tx)
  */
 void ProcessRx_SetTargetSpeed(uint8_t *rx)
 {
-	const int16_t motor_target_speed = (rx[2] << 8) | rx[3];
-	MC_ProgramSpeedRampMotor1(motor_target_speed, 0);
-	SetMotorEnabled(rx[1]);
+  const int16_t motor_target_speed = (rx[2] << 8) | rx[3];
+  MC_ProgramSpeedRampMotor1(motor_target_speed, 0);
+  SetMotorEnabled(rx[1]);
 }
 
 /**
@@ -182,9 +182,9 @@ void ProcessRx_SetTargetSpeed(uint8_t *rx)
  */
 void ProcessRx_SetTargetTorque(uint8_t *rx) 
 {
-	const int16_t motor_target_torque = (rx[2] << 8) | rx[3];
-	MC_ProgramTorqueRampMotor1(motor_target_torque, 0);
-	SetMotorEnabled(rx[1]);
+  const int16_t motor_target_torque = (rx[2] << 8) | rx[3];
+  MC_ProgramTorqueRampMotor1(motor_target_torque, 0);
+  SetMotorEnabled(rx[1]);
 }
 
 /**
@@ -198,7 +198,7 @@ void ProcessRx_SetTargetTorque(uint8_t *rx)
  */
 void ProcessRx_SetResponseType(uint8_t *rx) 
 {
-	response_type = rx[1];
+  response_type = rx[1];
 }
 
 /**
@@ -212,11 +212,11 @@ void ProcessRx_SetResponseType(uint8_t *rx)
  */
 void ProcessRx_SetPidTorqueKpKi(uint8_t *rx) 
 {
-	const int16_t kp = (rx[1] << 8) | rx[2];
-	const int16_t ki = (rx[3] << 8) | rx[4];
+  const int16_t kp = (rx[1] << 8) | rx[2];
+  const int16_t ki = (rx[3] << 8) | rx[4];
 
-	PID_SetKP(&PIDIqHandle_M1, kp);
-	PID_SetKI(&PIDIqHandle_M1, ki);
+  PID_SetKP(&PIDIqHandle_M1, kp);
+  PID_SetKI(&PIDIqHandle_M1, ki);
 }
 
 /**
@@ -230,11 +230,11 @@ void ProcessRx_SetPidTorqueKpKi(uint8_t *rx)
  */
 void ProcessRx_SetPidFluxKpKi(uint8_t *rx) 
 {
-	const int16_t kp = (rx[1] << 8) | rx[2];
-	const int16_t ki = (rx[3] << 8) | rx[4];
-	
-	PID_SetKP(&PIDIdHandle_M1, kp);
-	PID_SetKI(&PIDIdHandle_M1, ki);
+  const int16_t kp = (rx[1] << 8) | rx[2];
+  const int16_t ki = (rx[3] << 8) | rx[4];
+  
+  PID_SetKP(&PIDIdHandle_M1, kp);
+  PID_SetKI(&PIDIdHandle_M1, ki);
 }
 
 /**
@@ -248,11 +248,11 @@ void ProcessRx_SetPidFluxKpKi(uint8_t *rx)
  */
 void ProcessRx_SetPidSpeedKpKi(uint8_t *rx) 
 {
-	const int16_t kp = (rx[1] << 8) | rx[2];
-	const int16_t ki = (rx[3] << 8) | rx[4];
-	
-	PID_SetKP(&PIDSpeedHandle_M1, kp);
-	PID_SetKI(&PIDSpeedHandle_M1, ki);
+  const int16_t kp = (rx[1] << 8) | rx[2];
+  const int16_t ki = (rx[3] << 8) | rx[4];
+  
+  PID_SetKP(&PIDSpeedHandle_M1, kp);
+  PID_SetKI(&PIDSpeedHandle_M1, ki);
 }
 
 /**
@@ -266,15 +266,15 @@ void ProcessRx_SetPidSpeedKpKi(uint8_t *rx)
  */
 void PopulateTx_ResponseSpeedAndFaults(uint8_t *tx) 
 {
-	const int16_t motor_current_speed = MC_GetMecSpeedAverageMotor1();
-	const int16_t motor_faults = MC_GetOccurredFaultsMotor1();
+  const int16_t motor_current_speed = MC_GetMecSpeedAverageMotor1();
+  const int16_t motor_faults = MC_GetOccurredFaultsMotor1();
 
-	tx[0] = SPEED_AND_FAULTS;
-	tx[1] = (motor_current_speed >> 8) & 0xFF;
-	tx[2] = motor_current_speed & 0xFF;
-	tx[3] = (motor_faults >> 8) & 0xFF;
-	tx[4] = motor_faults & 0xFF;
-	tx[5] = CrcGenerateChecksum(tx, FRAME_SIZE - 1);
+  tx[0] = SPEED_AND_FAULTS;
+  tx[1] = (motor_current_speed >> 8) & 0xFF;
+  tx[2] = motor_current_speed & 0xFF;
+  tx[3] = (motor_faults >> 8) & 0xFF;
+  tx[4] = motor_faults & 0xFF;
+  tx[5] = CrcGenerateChecksum(tx, FRAME_SIZE - 1);
 }
 
 /**
@@ -288,14 +288,14 @@ void PopulateTx_ResponseSpeedAndFaults(uint8_t *tx)
  */
 void PopulateTx_ResponseIqAndId(uint8_t *tx) 
 {
-	const qd_t motor_iqd = MC_GetIqdMotor1();
+  const qd_t motor_iqd = MC_GetIqdMotor1();
 
-	tx[0] = IQ_AND_ID;
-	tx[1] = (motor_iqd.q >> 8) & 0xFF;
-	tx[2] = motor_iqd.q & 0xFF;
-	tx[3] = (motor_iqd.d >> 8) & 0xFF;
-	tx[4] = motor_iqd.d & 0xFF;
-	tx[5] = CrcGenerateChecksum(tx, FRAME_SIZE - 1);
+  tx[0] = IQ_AND_ID;
+  tx[1] = (motor_iqd.q >> 8) & 0xFF;
+  tx[2] = motor_iqd.q & 0xFF;
+  tx[3] = (motor_iqd.d >> 8) & 0xFF;
+  tx[4] = motor_iqd.d & 0xFF;
+  tx[5] = CrcGenerateChecksum(tx, FRAME_SIZE - 1);
 }
 
 /**
@@ -305,33 +305,36 @@ void PopulateTx_ResponseIqAndId(uint8_t *tx)
  */
 void SetMotorEnabled(bool enabled) 
 {
-	if (enabled && !motor_enabled) 
+  if (enabled && !motor_enabled) 
   {
-		MC_StartMotor1();
-	} 
+    MC_StartMotor1();
+  } 
   else if (!enabled && motor_enabled) 
   {
-		MC_StopMotor1();
-	}
-	motor_enabled = enabled;
+    MC_StopMotor1();
+  }
+  motor_enabled = enabled;
 }
 
 /* SPI callback handlers -----------------------------------------------------*/
 
 void HAL_SPI_TxRxHalfCpltCallback(SPI_HandleTypeDef* hspi) {
-    if (hspi->Instance == SPI1) {
-		txrx_half_completed = true;
-	}
+  if (hspi->Instance == SPI1) 
+  {
+    txrx_half_completed = true;
+  }
 }
 
 void HAL_SPI_TxRxCpltCallback(SPI_HandleTypeDef* hspi) {
-    if (hspi->Instance == SPI1) {
-		txrx_completed = true;
-	}
+  if (hspi->Instance == SPI1) 
+  {
+    txrx_completed = true;
+  }
 }
 
 void HAL_SPI_ErrorCallback(SPI_HandleTypeDef* hspi) {
-    if (hspi->Instance == SPI1) {
-    	// Do nothing for now
-    }
+  if (hspi->Instance == SPI1) 
+  {
+    // Do nothing for now
+  }
 }
