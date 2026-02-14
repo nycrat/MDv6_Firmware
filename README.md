@@ -9,6 +9,7 @@ You will need to install the following software:
 - [STM32CubeIDE](https://www.st.com/en/development-tools/stm32cubeide.html) - for building, flashing, and debugging the firmware
 - [STM32CubeMX](https://www.st.com/en/development-tools/stm32cubemx.html) - for MCU/peripheral configuration and generating firmware code
 - [MCSDK](https://www.st.com/en/embedded-software/x-cube-mcsdk.html) - motor control SDK with firmware + tools that our project uses
+  - Unfortunately, this is SDK is only available for Windows. You can still build and flash our firmware without it, but you won't be able to use CubeMX and MC Workbench to edit the project config or generate code.
 
 MCSDK includes a program called [Motor Control Workbench](https://wiki.st.com/stm32mcu/wiki/STM32MotorControl:STM32_MC_Workbench) for configuring MCSDK motor control parameters and generating a CubeMX-compatible project with all the motor control firmware code.
 
