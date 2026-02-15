@@ -24,15 +24,16 @@ The MCSDK firmware is documented in [UM1052](https://www.st.com/resource/zh/user
 
 ### Using MC Workbench
 
-The MC Workbench file `MDv6.stwb6` used to generate our project is included in the repo. If you open this file in MC Workbench to edit parameters and regenerate the project, **you will end up generating code for a new project in a separate folder named `MDv6`.** Instead, try opening the `MDv6.ioc` file in MC Workbench and see if you can edit your desired parameters there. Then, when you go to generate the project, this will overwrite the existing project rather than create a new project.
+The MC Workbench file `MDv6.stwb6` used to generate our project is included in the repo. If you open this file in MC Workbench to edit parameters and regenerate the project, **you will end up generating code for a new project in a separate folder named `MDv6`.** Alternatively, you can open the `MDv6.ioc` file in MC Workbench, which will overwrite the existing project when regenerating rather than create a new project.
 
-Note that after a project is generated using the `MDv6.stwb6` file, all hardware parameters are frozen (e.g. power stage parameters). This means that some parameters are not editable via opening the `MDv6.ioc` (even if it looks like you can via the Workbench UI... when you go to generate the project, your parameter changes won't appear in the code). In case you need to edit these locked parameters, you'll need to: 
+Note that after a project is generated using the `MDv6.stwb6` file, all hardware parameters are frozen (e.g. power stage parameters). This means that some parameters are not editable via opening the `MDv6.ioc` (even if it looks like you can via the Workbench UI... when you go to generate the project, your parameter changes won't appear in the code). Furthermore, editing `MDv6.ioc` but not `MDv6.stwb6` will leave `MDv6.stwb6` outdated, which isn't ideal.
 
-1. Open the `MDv6.stwb6` file with MC Workbench and edit the params
-2. Generate the project (the generate project will appear in a separate folder named `MDv6`)
-3. Replace the contents of the repo with the generated project's contents
-4. Manually determine what changes need to be kept/discarded (highly recommend using some Git GUI tool). Be careful with the `MDv6.ioc` file and make sure that our custom pinout / SPI and DMA initialization doesn't get deleted.
+Hence, the following process is recommended for editing MCSDK parameters: 
 
+1. Open the `MDv6.stwb6` file with MC Workbench and edit the parameters.
+2. Generate the project. The generated project will appear in a separate folder named `MDv6` within the repo.
+3. Replace the contents of the repo with the generated project's contents.
+4. Manually determine what changes need to be kept/discarded by analyzing the Git diff (highly recommend using sort of Git GUI tool). Be careful with the `MDv6.ioc` file and make sure that our custom pinout / SPI and DMA initialization code doesn't get deleted.
 
 ## SPI Interface
 
