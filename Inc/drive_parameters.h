@@ -56,34 +56,34 @@
 #define ISR_FREQUENCY_HZ                    (PWM_FREQUENCY/REGULATION_EXECUTION_RATE) /*!< @brief FOC execution rate in Hz */
 
 /* Gains values for torque and flux control loops */
-#define PID_TORQUE_KP_DEFAULT               3098
-#define PID_TORQUE_KI_DEFAULT               2686
+#define PID_TORQUE_KP_DEFAULT               3383
+#define PID_TORQUE_KI_DEFAULT               2886
 #define PID_TORQUE_KD_DEFAULT               100
-#define PID_FLUX_KP_DEFAULT                 3098
-#define PID_FLUX_KI_DEFAULT                 2686
+#define PID_FLUX_KP_DEFAULT                 3383
+#define PID_FLUX_KI_DEFAULT                 2886
 #define PID_FLUX_KD_DEFAULT                 100
 
 /* Torque/Flux control loop gains dividers*/
-#define TF_KPDIV                            1024
-#define TF_KIDIV                            2048
+#define TF_KPDIV                            4096
+#define TF_KIDIV                            8192
 #define TF_KDDIV                            8192
-#define TF_KPDIV_LOG                        LOG2((1024))
-#define TF_KIDIV_LOG                        LOG2((2048))
+#define TF_KPDIV_LOG                        LOG2((4096))
+#define TF_KIDIV_LOG                        LOG2((8192))
 #define TF_KDDIV_LOG                        LOG2((8192))
 #define TFDIFFERENTIAL_TERM_ENABLING        DISABLE
 
-#define PID_SPEED_KP_DEFAULT                2512/(SPEED_UNIT/10) /* Workbench compute the gain for 01Hz unit*/
-#define PID_SPEED_KI_DEFAULT                249/(SPEED_UNIT/10) /* Workbench compute the gain for 01Hz unit*/
+#define PID_SPEED_KP_DEFAULT                2300/(SPEED_UNIT/10) /* Workbench compute the gain for 01Hz unit*/
+#define PID_SPEED_KI_DEFAULT                455/(SPEED_UNIT/10) /* Workbench compute the gain for 01Hz unit*/
 #define PID_SPEED_KD_DEFAULT                0/(SPEED_UNIT/10) /* Workbench compute the gain for 01Hz unit*/
 
 /* Speed control loop */
 #define SPEED_LOOP_FREQUENCY_HZ             (uint16_t)1000 /*!<Execution rate of speed regulation loop (Hz) */
 
 /* Speed PID parameter dividers */
-#define SP_KPDIV                            128
+#define SP_KPDIV                            64
 #define SP_KIDIV                            16384
 #define SP_KDDIV                            16
-#define SP_KPDIV_LOG                        LOG2((128))
+#define SP_KPDIV_LOG                        LOG2((64))
 #define SP_KIDIV_LOG                        LOG2((16384))
 #define SP_KDDIV_LOG                        LOG2((16))
 
@@ -131,8 +131,8 @@
 
 /*  Feed-forward parameters */
 #define FEED_FORWARD_CURRENT_REG_ENABLING ENABLE
-#define M1_CONSTANT1_Q                      82776
-#define M1_CONSTANT1_D                      82776
+#define M1_CONSTANT1_Q                      90391
+#define M1_CONSTANT1_D                      90391
 #define M1_CONSTANT2_QD                     4567
 
 /*** On the fly start-up ***/

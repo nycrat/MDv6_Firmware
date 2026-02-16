@@ -53,9 +53,9 @@ static const MotorConfig_reg_t M1_MotorConfig_reg =
 {
   .polePairs  = 8,
   .ratedFlux  = 2.7,
-  .rs         = 0.31,
-  .ls         = 0.00011*1.000,
-  .ld         = 0.00011,
+  .rs         = 0.61,
+  .ls         = 0.00022*1.000,
+  .ld         = 0.00022,
   .maxCurrent = 9.5,
   .name = "DF45L024048-A2"
 };

@@ -10,7 +10,8 @@ You will need to install the following software:
 - [STM32CubeMX](https://www.st.com/en/development-tools/stm32cubemx.html) - for MCU/peripheral configuration and generating firmware code
 - [MCSDK](https://www.st.com/en/embedded-software/x-cube-mcsdk.html) - motor control SDK with firmware + tools that our project uses
   - Unfortunately, this is SDK is only available for Windows. You can still build and flash our firmware without it, but you won't be able to use CubeMX and MC Workbench to edit the project config or generate code.
-  - MCSDK includes a program called [Motor Control Workbench](https://wiki.st.com/stm32mcu/wiki/STM32MotorControl:STM32_MC_Workbench) for configuring MCSDK motor control parameters and generating a CubeMX-compatible project with all the motor control firmware code.
+
+MCSDK includes a program called [Motor Control Workbench](https://wiki.st.com/stm32mcu/wiki/STM32MotorControl:STM32_MC_Workbench) for configuring MCSDK motor control parameters and generating a CubeMX-compatible project with all the motor control firmware code.
 
 ## Generated Code
 
@@ -27,7 +28,7 @@ The MC Workbench file `MDv6.stwb6` used to generate our project is included in t
 
 Note that after a project is generated using the `MDv6.stwb6` file, all hardware parameters are frozen (e.g. power stage parameters). This means that some parameters are not editable via opening the `MDv6.ioc` (even if it looks like you can via the Workbench UI... when you go to generate the project, your parameter changes won't appear in the code). Furthermore, editing `MDv6.ioc` but not `MDv6.stwb6` will leave `MDv6.stwb6` outdated, which isn't ideal.
 
-Given these limitations, the following process is recommended for editing MCSDK parameters: 
+Hence, the following process is recommended for editing MCSDK parameters: 
 
 1. Open the `MDv6.stwb6` file with MC Workbench and edit the parameters.
 2. Generate the project. The generated project will appear in a separate folder named `MDv6` within the repo.
