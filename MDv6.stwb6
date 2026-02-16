@@ -1025,7 +1025,7 @@
           "sensing": {
             "amplification": "external",
             "shuntResistor": 0.015,
-            "gain": 3.663,
+            "gain": 2,
             "tNoise": "Number.NaN",
             "tRise": "Number.NaN",
             "maxModulation": "Number.NaN",
@@ -1095,8 +1095,8 @@
         "description": "Nanotec DF45L024048-A2 BLDC",
         "polePairs": "Number.NaN",
         "mmsType": "",
-        "rs": "Number.NaN",
-        "ls": "Number.NaN",
+        "rs": 0.31,
+        "ls": 0.11,
         "mmsLd_lq_ratio": "Number.NaN",
         "maxCurrent": "Number.NaN",
         "maxDCVoltage": "Number.NaN",
@@ -1147,7 +1147,7 @@
             "P": "Number.NaN",
             "I": "Number.NaN"
           },
-          "cutOffFrequency": 1500,
+          "cutOffFrequency": 6000,
           "useMTPA": false,
           "feedForward": true,
           "MTPATarget": "Number.NaN"
