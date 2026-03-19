@@ -54,6 +54,11 @@ void ProcessRx_SetPidSpeedKpKi(uint8_t *rx);
 
 void PopulateTx_ResponseSpeedAndFaults(uint8_t *tx);
 void PopulateTx_ResponseIqAndId(uint8_t *tx);
+void PopulateTx_ResponseVqAndVd(uint8_t *tx);
+void PopulateTx_ResponsePhaseCurrentAndVoltage(uint8_t *tx);
+void PopulateTx_ResponseIqAndIqRef(uint8_t *tx);
+void PopulateTx_ResponseIdAndIdRef(uint8_t *tx);
+void PopulateTx_ResponseSpeedAndSpeedRef(uint8_t *tx);
 
 void SetMotorEnabled(bool enabled);
 
@@ -151,6 +156,21 @@ void ProcessSpiTransaction(uint8_t *rx, uint8_t *tx)
       break;
     case IQ_AND_ID:
       PopulateTx_ResponseIqAndId(tx);
+      break;
+    case VQ_AND_VD:
+      PopulateTx_ResponseVqAndVd(tx);
+      break;
+    case PHASE_CURRENT_AND_VOLTAGE:
+      PopulateTx_ResponsePhaseCurrentAndVoltage(tx);
+      break;
+    case IQ_AND_IQ_REF:
+      PopulateTx_ResponseIqAndIqRef(tx);
+      break;
+    case ID_AND_ID_REF:
+      PopulateTx_ResponseIdAndIdRef(tx);
+      break;
+    case SPEED_AND_SPEED_REF:
+      PopulateTx_ResponseSpeedAndSpeedRef(tx);
       break;
   }
 }
@@ -295,6 +315,115 @@ void PopulateTx_ResponseIqAndId(uint8_t *tx)
   tx[2] = motor_iqd.q & 0xFF;
   tx[3] = (motor_iqd.d >> 8) & 0xFF;
   tx[4] = motor_iqd.d & 0xFF;
+  tx[5] = CrcGenerateChecksum(tx, FRAME_SIZE - 1);
+}
+
+/**
+ * Populates the TX buffer with fields corresponding to the
+ * current Vq and Vd values for the motor.
+ *
+ *  +--------+---------------+----------------+-------+
+ *  |  Type  |      Vq       |       Vd       |  CRC  |
+ *  +--------+---------------+----------------+-------+
+ *      0        1       2        3      4       5
+ */
+void PopulateTx_ResponseVqAndVd(uint8_t *tx) 
+{
+  const qd_t motor_vqd = MC_GetVqdMotor1();
+
+  tx[0] = VQ_AND_VD;
+  tx[1] = (motor_vqd.q >> 8) & 0xFF;
+  tx[2] = motor_vqd.q & 0xFF;
+  tx[3] = (motor_vqd.d >> 8) & 0xFF;
+  tx[4] = motor_vqd.d & 0xFF;
+  tx[5] = CrcGenerateChecksum(tx, FRAME_SIZE - 1);
+}
+
+/**
+ * Populates the TX buffer with fields corresponding to the
+ * phase current and voltage amplitudes for the motor.
+ *
+ *  +--------+---------------+----------------+-------+
+ *  |  Type  | Phase Current |  Phase Voltage |  CRC  |
+ *  +--------+---------------+----------------+-------+
+ *      0        1       2        3      4       5
+ */
+void PopulateTx_ResponsePhaseCurrentAndVoltage(uint8_t *tx) 
+{
+  const int16_t motor_phase_current = MC_GetPhaseCurrentAmplitudeMotor1();
+  const int16_t motor_phase_voltage = MC_GetPhaseVoltageAmplitudeMotor1();
+
+  tx[0] = PHASE_CURRENT_AND_VOLTAGE;
+  tx[1] = (motor_phase_current >> 8) & 0xFF;
+  tx[2] = motor_phase_current & 0xFF;
+  tx[3] = (motor_phase_voltage >> 8) & 0xFF;
+  tx[4] = motor_phase_voltage & 0xFF;
+  tx[5] = CrcGenerateChecksum(tx, FRAME_SIZE - 1);
+}
+
+/**
+ * Populates the TX buffer with fields corresponding to the
+ * current Iq and reference Iq values for the motor.
+ *
+ *  +--------+---------------+----------------+-------+
+ *  |  Type  |      Iq       |     Iq Ref     |  CRC  |
+ *  +--------+---------------+----------------+-------+
+ *      0        1       2        3      4       5
+ */
+void PopulateTx_ResponseIqAndIqRef(uint8_t *tx) 
+{
+  const qd_t motor_iqd = MC_GetIqdMotor1();
+  const qd_t motor_iqd_ref = MC_GetIqdrefMotor1();
+
+  tx[0] = IQ_AND_IQ_REF;
+  tx[1] = (motor_iqd.q >> 8) & 0xFF;
+  tx[2] = motor_iqd.q & 0xFF;
+  tx[3] = (motor_iqd_ref.q >> 8) & 0xFF;
+  tx[4] = motor_iqd_ref.q & 0xFF;
+  tx[5] = CrcGenerateChecksum(tx, FRAME_SIZE - 1);
+}
+
+/**
+ * Populates the TX buffer with fields corresponding to the
+ * current Id and reference Id values for the motor.
+ *
+ *  +--------+---------------+----------------+-------+
+ *  |  Type  |      Id       |     Id Ref     |  CRC  |
+ *  +--------+---------------+----------------+-------+
+ *      0        1       2        3      4       5
+ */
+void PopulateTx_ResponseIdAndIdRef(uint8_t *tx) 
+{
+  const qd_t motor_iqd = MC_GetIqdMotor1();
+  const qd_t motor_iqd_ref = MC_GetIqdrefMotor1();
+
+  tx[0] = ID_AND_ID_REF;
+  tx[1] = (motor_iqd.d >> 8) & 0xFF;
+  tx[2] = motor_iqd.d & 0xFF;
+  tx[3] = (motor_iqd_ref.d >> 8) & 0xFF;
+  tx[4] = motor_iqd_ref.d & 0xFF;
+  tx[5] = CrcGenerateChecksum(tx, FRAME_SIZE - 1);
+}
+
+/**
+ * Populates the TX buffer with fields corresponding to the
+ * current measured speed and reference speed in RPM.
+ *
+ *  +--------+---------------+----------------+-------+
+ *  |  Type  |     Speed     |    Speed Ref   |  CRC  |
+ *  +--------+---------------+----------------+-------+
+ *      0        1       2        3      4       5
+ */
+void PopulateTx_ResponseSpeedAndSpeedRef(uint8_t *tx) 
+{
+  const int16_t motor_speed = MC_GetMecSpeedAverageMotor1();
+  const int16_t motor_speed_ref = MC_GetMecSpeedReferenceMotor1();
+
+  tx[0] = SPEED_AND_SPEED_REF;
+  tx[1] = (motor_speed >> 8) & 0xFF;
+  tx[2] = motor_speed & 0xFF;
+  tx[3] = (motor_speed_ref >> 8) & 0xFF;
+  tx[4] = motor_speed_ref & 0xFF;
   tx[5] = CrcGenerateChecksum(tx, FRAME_SIZE - 1);
 }
 

@@ -23,8 +23,13 @@ typedef enum {
 } Opcode_t;
 
 typedef enum {
-  SPEED_AND_FAULTS  = 0x01,
-  IQ_AND_ID         = 0x02,
+  SPEED_AND_FAULTS          = 0x01,
+  IQ_AND_ID                 = 0x02,
+  VQ_AND_VD                 = 0x03,
+  PHASE_CURRENT_AND_VOLTAGE = 0x04,
+  IQ_AND_IQ_REF             = 0x05,
+  ID_AND_ID_REF             = 0x06,
+  SPEED_AND_SPEED_REF       = 0x07,
 } ResponseType_t;
 
 /**
