@@ -1005,7 +1005,7 @@
     "steps": {
       "powerSwitches_0": {
         "setting": {
-          "PWMFrequency": 13000,
+          "PWMFrequency": 16000,
           "chargeBootCapDuty": "Number.NaN",
           "chargeBootCapMs": "Number.NaN",
           "drivingTopology": ""
@@ -1025,7 +1025,7 @@
           "sensing": {
             "amplification": "external",
             "shuntResistor": 0.015,
-            "gain": 3.663,
+            "gain": 2,
             "tNoise": "Number.NaN",
             "tRise": "Number.NaN",
             "maxModulation": "Number.NaN",
@@ -1095,19 +1095,19 @@
         "description": "Nanotec DF45L024048-A2 BLDC",
         "polePairs": "Number.NaN",
         "mmsType": "",
-        "rs": "Number.NaN",
-        "ls": "Number.NaN",
+        "rs": 0.31,
+        "ls": 0.11,
         "mmsLd_lq_ratio": "Number.NaN",
         "maxCurrent": "Number.NaN",
         "maxDCVoltage": "Number.NaN",
-        "BEmfConstant": 2.74,
-        "inertia": "Number.NaN",
-        "friction": "Number.NaN",
+        "BEmfConstant": 3.05,
+        "inertia": 4,
+        "friction": 16,
         "maxRatedSpeed": "Number.NaN",
         "hasHallSensor": true,
         "hallSensor": {
           "sensorsDisplacement": "Number.NaN",
-          "placementElectricalAngle": "Number.NaN"
+          "placementElectricalAngle": 300
         },
         "hasQuadratureEncoder": false,
         "quadratureEncoder": {
@@ -1147,7 +1147,7 @@
             "P": "Number.NaN",
             "I": "Number.NaN"
           },
-          "cutOffFrequency": 1500,
+          "cutOffFrequency": 800,
           "useMTPA": false,
           "feedForward": true,
           "MTPATarget": "Number.NaN"

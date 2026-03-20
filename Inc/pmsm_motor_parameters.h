@@ -29,8 +29,8 @@
 
 /***************** MOTOR ELECTRICAL PARAMETERS  ******************************/
 #define POLE_PAIR_NUM           8 /* Number of motor pole pairs */
-#define RS                      0.61 /* Stator resistance , ohm*/
-#define LS                      0.00022 /* Stator inductance, H
+#define RS                      0.31 /* Stator resistance , ohm*/
+#define LS                      0.00011 /* Stator inductance, H
                                                  For I-PMSM it is equal to Lq */
 
 /* When using Id = 0, NOMINAL_CURRENT is utilized to saturate the output of the
@@ -41,7 +41,7 @@
                                    *Amplifying network gain)/(MCU supply voltage/2)
 */
 
-#define MOTOR_VOLTAGE_CONSTANT  2.7 /*!< Volts RMS ph-ph /kRPM */
+#define MOTOR_VOLTAGE_CONSTANT  3.1 /*!< Volts RMS ph-ph /kRPM */
 #define MOTOR_MAX_SPEED_RPM     4840 /*!< Maximum rated speed  */
 #define NOMINAL_CURRENT_A       9.5
 
@@ -58,7 +58,7 @@
                                                  It can be either DEGREES_120 or
                                                  DEGREES_60 */
 
-#define HALL_PHASE_SHIFT        330 /*!< Define here in degrees
+#define HALL_PHASE_SHIFT        300 /*!< Define here in degrees
                                                  the electrical phase shift between
                                                  the low to high transition of
                                                  signal H1 and the maximum of
