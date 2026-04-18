@@ -89,7 +89,8 @@ __weak void FOC_Init(void)
     R1_Init(&PWM_Handle_M1);
 
     /* USER CODE BEGIN MCboot 1 */
-
+    SpeedFF_Init(pSpeedFF[M1]);
+    pSTC[M1]->SpeedFF = pSpeedFF[M1];
     /* USER CODE END MCboot 1 */
 
     /******************************************************/
@@ -395,7 +396,10 @@ __weak void FOC_Clear(uint8_t bMotor)
   }
 
   /* USER CODE BEGIN FOC_Clear 1 */
-
+  if (pSpeedFF[bMotor] != NULL)
+  {
+    SpeedFF_Clear(pSpeedFF[bMotor]);
+  }
   /* USER CODE END FOC_Clear 1 */
 }
 

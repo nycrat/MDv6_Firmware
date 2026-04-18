@@ -33,6 +33,10 @@ extern "C" {
 #include "pid_regulator.h"
 #include "speed_pos_fdbk.h"
 
+/* USER CODE BEGIN Includes */
+#include "speed_feed_forward_ctrl.h"
+/* USER CODE END Includes */
+
 /** @addtogroup MCSDK
   * @{
   */
@@ -86,6 +90,9 @@ typedef struct
   int16_t TorqueRefDefault;            /*!< Default motor torque reference. This value represents actually the Iq
                                             current reference expressed in digit. */
   int16_t IdrefDefault;                /*!< Default Id current reference expressed in digit. */
+  /* USER CODE BEGIN */
+  SpeedFF_Handle_t *SpeedFF;           /*!< Speed feedforward controller handle. */
+  /* USER CODE END */
 } SpeednTorqCtrl_Handle_t;
 
 /* Initializes all the object variables */

@@ -35,7 +35,7 @@
 #include "hall_speed_pos_fdbk.h"
 
 /* USER CODE BEGIN Additional include */
-
+#include "speed_feed_forward_ctrl.h"
 /* USER CODE END Additional include */
 
 extern PID_Handle_t PIDIqHandle_M1;
@@ -61,7 +61,8 @@ extern PID_Handle_t PIDSpeedHandle_M1;
 extern HALL_Handle_t HALL_M1;
 
 /* USER CODE BEGIN Additional extern */
-
+extern SpeedFF_Handle_t SpeedFF_M1;
+extern SpeedFF_Handle_t *pSpeedFF[NBR_OF_MOTORS];
 /* USER CODE END Additional extern */
 
 #endif /* MC_CONFIG_H */

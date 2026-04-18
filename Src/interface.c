@@ -15,6 +15,7 @@
 
 #include "stm32f0xx_hal.h"
 #include "motorcontrol.h"
+#include "speed_feed_forward_ctrl.h"
 #include "crc.h"
 
 #include <string.h>
@@ -51,6 +52,7 @@ void ProcessRx_SetResponseType(uint8_t *rx);
 void ProcessRx_SetPidTorqueKpKi(uint8_t *rx);
 void ProcessRx_SetPidFluxKpKi(uint8_t *rx);
 void ProcessRx_SetPidSpeedKpKi(uint8_t *rx);
+void ProcessRx_SetSpeedFeedForwardKaKv(uint8_t *rx);
 
 void PopulateTx_ResponseSpeedAndFaults(uint8_t *tx);
 void PopulateTx_ResponseIqAndId(uint8_t *tx);
@@ -145,6 +147,9 @@ void ProcessSpiTransaction(uint8_t *rx, uint8_t *tx)
         break;
       case SET_PID_SPEED_KP_KI:
         ProcessRx_SetPidSpeedKpKi(rx_copy);
+        break;
+      case SET_SPEED_FEED_FORWARD_KA_KV:
+        ProcessRx_SetSpeedFeedForwardKaKv(rx_copy);
         break;
     }
   }
@@ -273,6 +278,29 @@ void ProcessRx_SetPidSpeedKpKi(uint8_t *rx)
   
   PID_SetKP(&PIDSpeedHandle_M1, kp);
   PID_SetKI(&PIDSpeedHandle_M1, ki);
+}
+
+/**
+ * Processes the received SPI frame to update the Ka and Kv 
+ * parameters for the speed feedforward controller.
+ *
+ *  +--------+----------------+---------------+-------+
+ *  | Opcode |       Ka       |       Kv      |  CRC  |
+ *  +--------+----------------+---------------+-------+
+ *      0        1       2        3       4       5
+ */
+void ProcessRx_SetSpeedFeedForwardKaKv(uint8_t *rx) 
+{
+  const int16_t ka = (rx[1] << 8) | rx[2];
+  const int16_t kv = (rx[3] << 8) | rx[4];
+
+  const SpeedFF_TuningStruct_t constants = 
+  {
+    .wKaGain = (int32_t)ka,
+    .wKvGain = (int32_t)kv,
+  };
+
+  SpeedFF_SetFFConstants(&SpeedFF_M1, constants);
 }
 
 /**
@@ -447,21 +475,24 @@ void SetMotorEnabled(bool enabled)
 
 /* SPI callback handlers -----------------------------------------------------*/
 
-void HAL_SPI_TxRxHalfCpltCallback(SPI_HandleTypeDef* hspi) {
+void HAL_SPI_TxRxHalfCpltCallback(SPI_HandleTypeDef* hspi)
+{
   if (hspi->Instance == SPI1) 
   {
     txrx_half_completed = true;
   }
 }
 
-void HAL_SPI_TxRxCpltCallback(SPI_HandleTypeDef* hspi) {
+void HAL_SPI_TxRxCpltCallback(SPI_HandleTypeDef* hspi)
+{
   if (hspi->Instance == SPI1) 
   {
     txrx_completed = true;
   }
 }
 
-void HAL_SPI_ErrorCallback(SPI_HandleTypeDef* hspi) {
+void HAL_SPI_ErrorCallback(SPI_HandleTypeDef* hspi)
+{
   if (hspi->Instance == SPI1) 
   {
     // Do nothing for now

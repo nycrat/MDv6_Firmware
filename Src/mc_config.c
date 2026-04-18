@@ -277,7 +277,17 @@ MCI_Handle_t Mci[NBR_OF_MOTORS] =
 };
 
 /* USER CODE BEGIN Additional configuration */
+SpeedFF_Handle_t SpeedFF_M1 = 
+{
+  .wDefKaGain = (int32_t)SPEED_FEED_FORWARD_KA_DEFAULT,
+  .wDefKvGain = (int32_t)SPEED_FEED_FORWARD_KV_DEFAULT,
+  .wKaDivisor = (int32_t)SPEED_FEED_FORWARD_KA_DIVISOR,
+  .wKvDivisor = (int32_t)SPEED_FEED_FORWARD_KV_DIVISOR,
+  .hTorqueRefUpperLimit = (int16_t)IQMAX,
+  .hTorqueRefLowerLimit = -(int16_t)IQMAX,
+};
 
+SpeedFF_Handle_t *pSpeedFF[NBR_OF_MOTORS] = {&SpeedFF_M1};
 /* USER CODE END Additional configuration */
 
 /******************* (C) COPYRIGHT 2025 STMicroelectronics *****END OF FILE****/

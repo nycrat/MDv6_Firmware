@@ -455,6 +455,10 @@ __weak int16_t STC_CalcTorqueReference(SpeednTorqCtrl_Handle_t *pHandle)
       hError = hTargetSpeed - hMeasuredSpeed;
       hTorqueReference = PI_Controller(pHandle->PISpeed, (int32_t)hError);
 
+      /* USER CODE BEGIN */
+      SpeedFF_ComputeTorqueReference(pHandle->SpeedFF, &hTorqueReference, hTargetSpeed);
+      /* USER CODE END */
+
       pHandle->SpeedRefUnitExt = wCurrentReference;
       pHandle->TorqueRef = ((int32_t)hTorqueReference) * 65536;
     }

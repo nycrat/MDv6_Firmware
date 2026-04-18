@@ -13,13 +13,14 @@
 #define FRAME_SIZE 6
 
 typedef enum {
-  NO_OP                = 0x00,
-  SET_TARGET_SPEED     = 0x01,
-  SET_TARGET_TORQUE    = 0x02,
-  SET_RESPONSE_TYPE    = 0x03,
-  SET_PID_TORQUE_KP_KI = 0x04,
-  SET_PID_FLUX_KP_KI   = 0x05,
-  SET_PID_SPEED_KP_KI  = 0x06,
+  NO_OP                        = 0x00,
+  SET_TARGET_SPEED             = 0x01,
+  SET_TARGET_TORQUE            = 0x02,
+  SET_RESPONSE_TYPE            = 0x03,
+  SET_PID_TORQUE_KP_KI         = 0x04,
+  SET_PID_FLUX_KP_KI           = 0x05,
+  SET_PID_SPEED_KP_KI          = 0x06,
+  SET_SPEED_FEED_FORWARD_KA_KV = 0x07,
 } Opcode_t;
 
 typedef enum {
