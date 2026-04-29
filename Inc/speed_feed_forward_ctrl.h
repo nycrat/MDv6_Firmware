@@ -13,14 +13,9 @@
 
 #define SPEED_FEED_FORWARD_KA_DEFAULT 0
 #define SPEED_FEED_FORWARD_KV_DEFAULT 0
+#define SPEED_FEED_FORWARD_KS_DEFAULT 0
 #define SPEED_FEED_FORWARD_KA_DIVISOR 128
 #define SPEED_FEED_FORWARD_KV_DIVISOR 128
-
-typedef struct
-{
-  int32_t wKaGain;     /**< Acceleration feedforward constant */
-  int32_t wKvGain;     /**< Velocity feedforward constant */
-} SpeedFF_TuningStruct_t;
 
 typedef struct
 {
@@ -29,8 +24,10 @@ typedef struct
   int16_t hTorqueRefFeedForward;  /* Torque reference contribution from feedforward */
   int32_t wDefKaGain;             /* Default acceleration feedforward gain */
   int32_t wDefKvGain;             /* Default velocity feedforward gain */
+  int32_t wDefKsGain;             /* Default static feedforward gain */
   int32_t wKaGain;                /* Acceleration feedforward gain */
   int32_t wKvGain;                /* Velocity feedforward gain */
+  int32_t wKsGain;                /* Static gain for feedforward */
   int32_t wKaDivisor;             /* Divisor for acceleration feedforward gain */
   int32_t wKvDivisor;             /* Divisor for velocity feedforward gain */
   int16_t hTorqueRefUpperLimit;   /* Upper limit for the torque reference */
@@ -57,14 +54,12 @@ void SpeedFF_ComputeTorqueReference(SpeedFF_Handle_t *pHandle, int16_t *hTorqueR
  */
 int16_t SpeedFF_GetTorqueRefFeedForward(SpeedFF_Handle_t *pHandle);
 
-/**
- * Sets new feedforward constants (Ka and Kv) at runtime.
- */
-void SpeedFF_SetFFConstants(SpeedFF_Handle_t *pHandle, SpeedFF_TuningStruct_t sNewConstants);
+void SpeedFF_SetKaGain(SpeedFF_Handle_t *pHandle, int32_t wKaGain);
+void SpeedFF_SetKvGain(SpeedFF_Handle_t *pHandle, int32_t wKvGain);
+void SpeedFF_SetKsGain(SpeedFF_Handle_t *pHandle, int32_t wKsGain);
 
-/**
- * Gets the current feedforward constants (Ka and Kv).
- */
-SpeedFF_TuningStruct_t SpeedFF_GetFFConstants(SpeedFF_Handle_t *pHandle);
+int32_t SpeedFF_GetKaGain(SpeedFF_Handle_t *pHandle);
+int32_t SpeedFF_GetKvGain(SpeedFF_Handle_t *pHandle);
+int32_t SpeedFF_GetKsGain(SpeedFF_Handle_t *pHandle);
 
 #endif /* SPEED_FEEDFORWARDCTRL_H */

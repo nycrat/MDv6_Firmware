@@ -19,6 +19,7 @@ __weak void SpeedFF_Init(SpeedFF_Handle_t *pHandle)
 {
   pHandle->wKaGain = pHandle->wDefKaGain;
   pHandle->wKvGain = pHandle->wDefKvGain;
+  pHandle->wKsGain = pHandle->wDefKsGain;
   pHandle->hSpeedRefPrevious = 0;
   pHandle->hSpeedRefDelta = 0;
   pHandle->hTorqueRefFeedForward = 0;
@@ -41,15 +42,18 @@ __weak void SpeedFF_Clear(SpeedFF_Handle_t *pHandle)
 __weak void SpeedFF_ComputeTorqueReference(SpeedFF_Handle_t *pHandle, int16_t *hTorqueRef, int16_t hSpeedRef)
 {
   int16_t hSpeedRefDelta;
+  int32_t wSpeedRefSign;
   int32_t wTorqueFF;
   int32_t wTorqueRefCombined;
 
   hSpeedRefDelta = hSpeedRef - pHandle->hSpeedRefPrevious;
+  wSpeedRefSign = (hSpeedRef > 0) - (hSpeedRef < 0);
   pHandle->hSpeedRefDelta = hSpeedRefDelta;
   pHandle->hSpeedRefPrevious = hSpeedRef;
 
   wTorqueFF = ((int32_t)hSpeedRefDelta * pHandle->wKaGain) / pHandle->wKaDivisor;
   wTorqueFF += ((int32_t)hSpeedRef * pHandle->wKvGain) / pHandle->wKvDivisor;
+  wTorqueFF += wSpeedRefSign * pHandle->wKsGain;
 
   wTorqueRefCombined = (int32_t)*hTorqueRef + (int32_t)pHandle->hTorqueRefFeedForward;
 
@@ -81,24 +85,32 @@ __weak int16_t SpeedFF_GetTorqueRefFeedForward(SpeedFF_Handle_t *pHandle)
   return pHandle->hTorqueRefFeedForward;
 }
 
-/**
- * Sets new feedforward constants (Ka and Kv) at runtime.
- */
-__weak void SpeedFF_SetFFConstants(SpeedFF_Handle_t *pHandle, SpeedFF_TuningStruct_t sNewConstants)
+__weak void SpeedFF_SetKaGain(SpeedFF_Handle_t *pHandle, int32_t wKaGain)
 {
-  pHandle->wKaGain = sNewConstants.wKaGain;
-  pHandle->wKvGain = sNewConstants.wKvGain;
+  pHandle->wKaGain = wKaGain;
 }
 
-/**
- * Gets the current feedforward constants (Ka and Kv).
- */
-__weak SpeedFF_TuningStruct_t SpeedFF_GetFFConstants(SpeedFF_Handle_t *pHandle)
+__weak void SpeedFF_SetKvGain(SpeedFF_Handle_t *pHandle, int32_t wKvGain)
 {
-  SpeedFF_TuningStruct_t sLocalConstants;
+  pHandle->wKvGain = wKvGain;
+}
 
-  sLocalConstants.wKaGain = pHandle->wKaGain;
-  sLocalConstants.wKvGain = pHandle->wKvGain;
+__weak void SpeedFF_SetKsGain(SpeedFF_Handle_t *pHandle, int32_t wKsGain)
+{
+  pHandle->wKsGain = wKsGain;
+}
 
-  return sLocalConstants;
+__weak int32_t SpeedFF_GetKaGain(SpeedFF_Handle_t *pHandle)
+{
+  return pHandle->wKaGain;
+}
+
+__weak int32_t SpeedFF_GetKvGain(SpeedFF_Handle_t *pHandle)
+{
+  return pHandle->wKvGain;
+}
+
+__weak int32_t SpeedFF_GetKsGain(SpeedFF_Handle_t *pHandle)
+{
+  return pHandle->wKsGain;
 }

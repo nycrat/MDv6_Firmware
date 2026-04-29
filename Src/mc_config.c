@@ -281,6 +281,7 @@ SpeedFF_Handle_t SpeedFF_M1 =
 {
   .wDefKaGain = (int32_t)SPEED_FEED_FORWARD_KA_DEFAULT,
   .wDefKvGain = (int32_t)SPEED_FEED_FORWARD_KV_DEFAULT,
+  .wDefKsGain = (int32_t)SPEED_FEED_FORWARD_KS_DEFAULT,
   .wKaDivisor = (int32_t)SPEED_FEED_FORWARD_KA_DIVISOR,
   .wKvDivisor = (int32_t)SPEED_FEED_FORWARD_KV_DIVISOR,
   .hTorqueRefUpperLimit = (int16_t)IQMAX,

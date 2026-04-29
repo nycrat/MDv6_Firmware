@@ -53,6 +53,7 @@ void ProcessRx_SetPidTorqueKpKi(uint8_t *rx);
 void ProcessRx_SetPidFluxKpKi(uint8_t *rx);
 void ProcessRx_SetPidSpeedKpKi(uint8_t *rx);
 void ProcessRx_SetSpeedFeedForwardKaKv(uint8_t *rx);
+void ProcessRx_SetSpeedFeedForwardKs(uint8_t *rx);
 
 void PopulateTx_ResponseSpeedAndFaults(uint8_t *tx);
 void PopulateTx_ResponseIqAndId(uint8_t *tx);
@@ -150,6 +151,9 @@ void ProcessSpiTransaction(uint8_t *rx, uint8_t *tx)
         break;
       case SET_SPEED_FEED_FORWARD_KA_KV:
         ProcessRx_SetSpeedFeedForwardKaKv(rx_copy);
+        break;
+      case SET_SPEED_FEED_FORWARD_KS:
+        ProcessRx_SetSpeedFeedForwardKs(rx_copy);
         break;
     }
   }
@@ -294,13 +298,24 @@ void ProcessRx_SetSpeedFeedForwardKaKv(uint8_t *rx)
   const int16_t ka = (rx[1] << 8) | rx[2];
   const int16_t kv = (rx[3] << 8) | rx[4];
 
-  const SpeedFF_TuningStruct_t constants = 
-  {
-    .wKaGain = (int32_t)ka,
-    .wKvGain = (int32_t)kv,
-  };
+  SpeedFF_SetKaGain(&SpeedFF_M1, (int32_t)ka);
+  SpeedFF_SetKvGain(&SpeedFF_M1, (int32_t)kv);
+}
 
-  SpeedFF_SetFFConstants(&SpeedFF_M1, constants);
+/**
+ * Processes the received SPI frame to update the Ks 
+ * parameter for the speed feedforward controller.
+ *
+ *  +--------+----------------+---------------+-------+
+ *  | Opcode |       Ks       |               |  CRC  |
+ *  +--------+----------------+---------------+-------+
+ *      0        1       2        3       4       5
+ */
+void ProcessRx_SetSpeedFeedForwardKs(uint8_t *rx) 
+{
+  const int16_t ks = (rx[1] << 8) | rx[2];
+
+  SpeedFF_SetKsGain(&SpeedFF_M1, (int32_t)ks);
 }
 
 /**
