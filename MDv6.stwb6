@@ -1005,7 +1005,7 @@
     "steps": {
       "powerSwitches_0": {
         "setting": {
-          "PWMFrequency": 16000,
+          "PWMFrequency": 22000,
           "chargeBootCapDuty": "Number.NaN",
           "chargeBootCapMs": "Number.NaN",
           "drivingTopology": ""

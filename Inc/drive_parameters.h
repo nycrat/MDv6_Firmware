@@ -46,7 +46,7 @@
 
 /**************************    DRIVE SETTINGS SECTION   **********************/
 /* PWM generation and current reading */
-#define PWM_FREQUENCY                       16000
+#define PWM_FREQUENCY                       22000
 #define PWM_FREQ_SCALING                    1
 #define LOW_SIDE_SIGNALS_ENABLING           LS_PWM_TIMER
 #define SW_DEADTIME_NS                      600 /*!< Dead-time to be inserted by FW, only if low side signals are enabled */
@@ -57,10 +57,10 @@
 
 /* Gains values for torque and flux control loops */
 #define PID_TORQUE_KP_DEFAULT               3304
-#define PID_TORQUE_KI_DEFAULT               2328
+#define PID_TORQUE_KI_DEFAULT               1693
 #define PID_TORQUE_KD_DEFAULT               100
 #define PID_FLUX_KP_DEFAULT                 3304
-#define PID_FLUX_KI_DEFAULT                 2328
+#define PID_FLUX_KI_DEFAULT                 1693
 #define PID_FLUX_KD_DEFAULT                 100
 
 /* Torque/Flux control loop gains dividers*/
@@ -131,9 +131,9 @@
 
 /*  Feed-forward parameters */
 #define FEED_FORWARD_CURRENT_REG_ENABLING ENABLE
-#define M1_CONSTANT1_Q                      101878
-#define M1_CONSTANT1_D                      101878
-#define M1_CONSTANT2_QD                     6257
+#define M1_CONSTANT1_Q                      140083
+#define M1_CONSTANT1_D                      140083
+#define M1_CONSTANT2_QD                     8603
 
 /*** On the fly start-up ***/
 
