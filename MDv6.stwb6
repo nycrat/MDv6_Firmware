@@ -1017,7 +1017,7 @@
         }
       },
       "currentSensing_0": {
-        "executionRate": 2,
+        "executionRate": 3,
         "topology": "",
         "topologyData": {
           "_tag": "1sh",
@@ -1025,7 +1025,7 @@
           "sensing": {
             "amplification": "external",
             "shuntResistor": 0.015,
-            "gain": 2,
+            "gain": 11.03,
             "tNoise": "Number.NaN",
             "tRise": "Number.NaN",
             "maxModulation": "Number.NaN",
@@ -1072,7 +1072,7 @@
         "samplingTime": "Number.NaN",
         "adc_freq": "Number.NaN",
         "enableSensing": true,
-        "busVoltageDivider": 14.82
+        "busVoltageDivider": 49.64
       },
       "temperatureSensing_0": {
         "hw": {
