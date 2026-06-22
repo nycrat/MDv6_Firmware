@@ -10,8 +10,11 @@
 #ifndef __INTERFACE_H
 #define __INTERFACE_H
 
-#define MESSAGE_SIZE 8
-#define MESSAGE_DELIMITER 0xAA
+#define MESSAGE_SIZE 10
+
+#define MESSAGE_DELIMITER_0 0xAA
+#define MESSAGE_DELIMITER_1 0xBB
+#define MESSAGE_DELIMITER_2 0xCC
 
 typedef enum {
   NO_OP                        = 0x00,
