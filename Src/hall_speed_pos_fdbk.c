@@ -85,9 +85,32 @@
 #define TWO_PI_Q15                            ((uint32_t)205887U)
 #define ONE_Q15                               ((uint16_t)0x7FFFU)
 
+/* --- Low-speed Hall interpolation tuning (Thunderbots) ----------------------
+ * Knobs for the phase-error correction (CompSpeed) that re-aligns the
+ * interpolated commutation angle to the Hall-measured sector angle. They only
+ * affect low-speed smoothness; both defaults preserve stock behaviour in normal
+ * operation. Tune on hardware.
+ *
+ * HALL_ANGLE_CORRECTION_SLEW_DIV: spreads each phase-error correction over this
+ *   many speed-loop periods instead of one. 1 = stock (full correction over one
+ *   period). Increase (2-4) to soften the re-lock at each edge -> smoother but
+ *   slightly laggier angle.
+ * HALL_MAX_ANGLE_CORRECTION_DPP: hard cap on the per-tick angle correction
+ *   (s16degree per FOC tick). Stops a large phase error (e.g. after a Hall
+ *   timeout at very low speed) from violently slewing the commutation angle.
+ *   Default ~30 electrical deg/tick is far above the normal correction (a few
+ *   hundred dpp), so it is a safety cap, not a behaviour change. Lower it to
+ *   force gentler re-locks.
+ */
+#define HALL_ANGLE_CORRECTION_SLEW_DIV        ((int32_t)1)
+#define HALL_MAX_ANGLE_CORRECTION_DPP         ((int32_t)(65536 / 12))
+
 static void HALL_Init_Electrical_Angle(HALL_Handle_t *pHandle);
 static int16_t HALL_UpdateFilteredSpeed(HALL_Handle_t *pHandle, int32_t inputSpeedDpp, uint32_t deltaCounts);
 static uint16_t HALL_ComputeAlphaQ15(uint32_t deltaCounts, uint32_t coefQ31);
+static uint8_t HALL_ReadHallState(HALL_Handle_t *pHandle);
+static int16_t HALL_SectorCenterFromState(uint8_t hallState, int16_t phaseShift, bool *pReliable);
+static void HALL_ClampAngleToSector(HALL_Handle_t *pHandle);
 
 /**
   * @brief Update the Hall electrical speed estimate using an adaptive exponential 
@@ -388,12 +411,16 @@ __weak int16_t HALL_CalcElAngle(HALL_Handle_t *pHandle)
 
       if (pHandle->IncrementElAngle >= S16_60_PHASE_SHIFT)
       {
-        pHandle->_Super.hElAngle += pHandle->_Super.hElSpeedDpp + pHandle->CompSpeed - (pHandle->IncrementElAngle - S16_60_PHASE_SHIFT) - 1;
+        /* Advance only up to the sector boundary and hold there until the next
+           Hall edge. The stock code subtracted an extra LSB here, which made a
+           stalled-at-boundary angle creep backwards; dropping it lets the angle
+           hold position (moving only by CompSpeed). */
+        pHandle->_Super.hElAngle += pHandle->_Super.hElSpeedDpp + pHandle->CompSpeed - (pHandle->IncrementElAngle - S16_60_PHASE_SHIFT);
         pHandle->IncrementElAngle = S16_60_PHASE_SHIFT;
       }
       else if (pHandle->IncrementElAngle <= -S16_60_PHASE_SHIFT)
       {
-        pHandle->_Super.hElAngle += pHandle->_Super.hElSpeedDpp + pHandle->CompSpeed - (pHandle->IncrementElAngle + S16_60_PHASE_SHIFT) + 1;
+        pHandle->_Super.hElAngle += pHandle->_Super.hElSpeedDpp + pHandle->CompSpeed - (pHandle->IncrementElAngle + S16_60_PHASE_SHIFT);
         pHandle->IncrementElAngle = -S16_60_PHASE_SHIFT;
       }
       else
@@ -479,7 +506,20 @@ __weak bool HALL_CalcAvrgMecSpeedUnit(HALL_Handle_t *pHandle, int16_t *hMecSpeed
             else
             {
               pHandle->DeltaAngle = pHandle->MeasuredElAngle - pHandle->_Super.hElAngle;
-              pHandle->CompSpeed = (int16_t)((int32_t)(pHandle->DeltaAngle) / (int32_t)(pHandle->PWMNbrPSamplingFreq));
+              /* Spread the phase-error correction over SLEW_DIV speed-loop
+                 periods and cap its per-tick magnitude so re-lock after a
+                 boundary freeze or Hall timeout is smooth and bounded. */
+              int32_t wComp = (int32_t)(pHandle->DeltaAngle)
+                            / ((int32_t)(pHandle->PWMNbrPSamplingFreq) * HALL_ANGLE_CORRECTION_SLEW_DIV);
+              if (wComp > HALL_MAX_ANGLE_CORRECTION_DPP)
+              {
+                wComp = HALL_MAX_ANGLE_CORRECTION_DPP;
+              }
+              else if (wComp < -HALL_MAX_ANGLE_CORRECTION_DPP)
+              {
+                wComp = -HALL_MAX_ANGLE_CORRECTION_DPP;
+              }
+              pHandle->CompSpeed = (int16_t)wComp;
             }
             /* Convert el_dpp to MecUnit */
             *hMecSpeedUnit = (int16_t)((pHandle->AvrElSpeedDpp * (int32_t)pHandle->_Super.hMeasurementFrequency
@@ -540,18 +580,7 @@ __weak void *HALL_TIMx_CC_IRQHandler(void *pHandleVoid)
   bPrevHallState = pHandle->HallState;
   PrevDirection = pHandle->Direction;
 
-  if (DEGREES_120 == pHandle->SensorPlacement)
-  {
-    pHandle->HallState  = (uint8_t)((LL_GPIO_IsInputPinSet(pHandle->H3Port, pHandle->H3Pin) << 2U)
-                                    | (LL_GPIO_IsInputPinSet(pHandle->H2Port, pHandle->H2Pin) << 1U)
-                                    | LL_GPIO_IsInputPinSet(pHandle->H1Port, pHandle->H1Pin));
-  }
-  else
-  {
-    pHandle->HallState  = (uint8_t)(((LL_GPIO_IsInputPinSet(pHandle->H2Port, pHandle->H2Pin) ^ 1U) << 2U)
-                                    | (LL_GPIO_IsInputPinSet(pHandle->H3Port, pHandle->H3Pin) << 1U)
-                                    | LL_GPIO_IsInputPinSet(pHandle->H1Port, pHandle->H1Pin));
-  }
+  pHandle->HallState = HALL_ReadHallState(pHandle);
   if (pHandle->SensorIsReliable)
   {
     switch (pHandle->HallState)
@@ -880,8 +909,10 @@ __weak void *HALL_TIMx_UP_IRQHandler(void *pHandleVoid)
       /* Set rotor speed to zero */
       pHandle->_Super.hElSpeedDpp = 0;
 
-      /* Reset the electrical angle according the hall sensor configuration */
-      HALL_Init_Electrical_Angle(pHandle);
+      /* Hold/clamp the interpolated angle to the current Hall sector instead of
+         snapping it to the sector centre (avoids a periodic low-speed torque
+         glitch when Hall edges are farther apart than HallTimeout). */
+      HALL_ClampAngleToSector(pHandle);
 
       /* Reset the overflow counter */
       pHandle->OVFCounter = 0U;
@@ -908,6 +939,116 @@ __weak void *HALL_TIMx_UP_IRQHandler(void *pHandleVoid)
 }
 
 /**
+  * @brief  Reads the three Hall GPIOs and returns the 3-bit Hall state,
+  *         honouring the configured sensor placement. Single source for the
+  *         Hall read shared by the capture ISR, angle init and timeout clamp.
+  */
+static uint8_t HALL_ReadHallState(HALL_Handle_t *pHandle)
+{
+  uint8_t hallState;
+  if (DEGREES_120 == pHandle->SensorPlacement)
+  {
+    hallState = (uint8_t)((LL_GPIO_IsInputPinSet(pHandle->H3Port, pHandle->H3Pin) << 2U)
+                          | (LL_GPIO_IsInputPinSet(pHandle->H2Port, pHandle->H2Pin) << 1U)
+                          | LL_GPIO_IsInputPinSet(pHandle->H1Port, pHandle->H1Pin));
+  }
+  else
+  {
+    hallState = (uint8_t)(((LL_GPIO_IsInputPinSet(pHandle->H2Port, pHandle->H2Pin) ^ 1U) << 2U)
+                          | (LL_GPIO_IsInputPinSet(pHandle->H3Port, pHandle->H3Pin) << 1U)
+                          | LL_GPIO_IsInputPinSet(pHandle->H1Port, pHandle->H1Pin));
+  }
+  return hallState;
+}
+
+/**
+  * @brief  Returns the electrical angle (s16degree) at the centre of the Hall
+  *         sector identified by @p hallState. Sets *pReliable to false for the
+  *         two illegal Hall codes (all-low / all-high) and leaves it untouched
+  *         otherwise.
+  */
+static int16_t HALL_SectorCenterFromState(uint8_t hallState, int16_t phaseShift, bool *pReliable)
+{
+  int16_t center;
+  switch (hallState)
+  {
+    case STATE_5:
+      center = (int16_t)(phaseShift + (S16_60_PHASE_SHIFT / 2));
+      break;
+    case STATE_1:
+      center = (int16_t)(phaseShift + S16_60_PHASE_SHIFT + (S16_60_PHASE_SHIFT / 2));
+      break;
+    case STATE_3:
+      center = (int16_t)(phaseShift + S16_120_PHASE_SHIFT + (S16_60_PHASE_SHIFT / 2));
+      break;
+    case STATE_2:
+      center = (int16_t)(phaseShift - S16_120_PHASE_SHIFT - (S16_60_PHASE_SHIFT / 2));
+      break;
+    case STATE_6:
+      center = (int16_t)(phaseShift - S16_60_PHASE_SHIFT - (S16_60_PHASE_SHIFT / 2));
+      break;
+    case STATE_4:
+      center = (int16_t)(phaseShift - (S16_60_PHASE_SHIFT / 2));
+      break;
+    default:
+      /* Bad hall sensor configuration so update the speed reliability */
+      *pReliable = false;
+      center = 0;
+      break;
+  }
+  return center;
+}
+
+/**
+  * @brief  Re-aligns the interpolated electrical angle after a Hall timeout
+  *         WITHOUT snapping it to the sector centre.
+  *
+  * At very low speed the Hall edges can be farther apart than HallTimeout, so
+  * the stock behaviour (re-init to the sector centre) fires repeatedly and
+  * injects a periodic step of up to +/-30 electrical deg into the commutation
+  * angle, felt as low-speed torque ripple / jerk. Instead we keep the
+  * interpolated angle when it already lies inside the current Hall sector, and
+  * otherwise clamp it to the nearest sector edge. This bounds the angle to the
+  * physically-correct 60 deg sector while preserving continuity.
+  */
+static void HALL_ClampAngleToSector(HALL_Handle_t *pHandle)
+{
+  bool bReliable = true;
+  uint8_t hallState = HALL_ReadHallState(pHandle);
+  int16_t hCenter = HALL_SectorCenterFromState(hallState, pHandle->PhaseShift, &bReliable);
+
+  pHandle->HallState = hallState;
+
+  if (false == bReliable)
+  {
+    pHandle->SensorIsReliable = false;
+  }
+  else
+  {
+    int16_t hHalfSector = (int16_t)(S16_60_PHASE_SHIFT / 2);
+    int16_t hDiff = (int16_t)(pHandle->_Super.hElAngle - hCenter); /* wraps in int16 */
+
+    if (hDiff > hHalfSector)
+    {
+      pHandle->_Super.hElAngle = (int16_t)(hCenter + hHalfSector);
+    }
+    else if (hDiff < (int16_t)(-hHalfSector))
+    {
+      pHandle->_Super.hElAngle = (int16_t)(hCenter - hHalfSector);
+    }
+    else
+    {
+      /* Interpolated angle already within the sector: keep it (no snap). */
+    }
+    pHandle->MeasuredElAngle = pHandle->_Super.hElAngle;
+  }
+
+  /* Stop dead-reckoning: hold this angle until the next Hall edge. */
+  pHandle->IncrementElAngle = 0;
+  pHandle->CompSpeed = 0;
+}
+
+/**
   * @brief  Read the logic level of the three Hall sensor and individuates in this
   *         way the position of the rotor (+/- 30ï¿½). Electrical angle is then
   *         initialized.
@@ -923,64 +1064,19 @@ static void HALL_Init_Electrical_Angle(HALL_Handle_t *pHandle)
   else
   {
 #endif
-    if (DEGREES_120 == pHandle->SensorPlacement)
+    bool bReliable = true;
+    pHandle->HallState = HALL_ReadHallState(pHandle);
+    int16_t hCenter = HALL_SectorCenterFromState(pHandle->HallState, pHandle->PhaseShift, &bReliable);
+
+    if (false == bReliable)
     {
-      pHandle->HallState  = (uint8_t)((LL_GPIO_IsInputPinSet(pHandle->H3Port, pHandle->H3Pin) << 2U)
-                                      | (LL_GPIO_IsInputPinSet(pHandle->H2Port, pHandle->H2Pin) << 1U)
-                                      | LL_GPIO_IsInputPinSet(pHandle->H1Port, pHandle->H1Pin));
+      pHandle->SensorIsReliable = false;
     }
     else
     {
-      pHandle->HallState  = (uint8_t)(((LL_GPIO_IsInputPinSet(pHandle->H2Port, pHandle->H2Pin) ^ 1U) << 2U)
-                                      | (LL_GPIO_IsInputPinSet(pHandle->H3Port, pHandle->H3Pin) << 1U)
-                                      | LL_GPIO_IsInputPinSet(pHandle->H1Port, pHandle->H1Pin));
+      pHandle->_Super.hElAngle = hCenter;
     }
 
-    switch (pHandle->HallState)
-    {
-      case STATE_5:
-      {
-        pHandle->_Super.hElAngle = (int16_t)(pHandle->PhaseShift + (S16_60_PHASE_SHIFT / 2));
-        break;
-      }
-
-      case STATE_1:
-      {
-        pHandle->_Super.hElAngle = (int16_t)(pHandle->PhaseShift + S16_60_PHASE_SHIFT + (S16_60_PHASE_SHIFT / 2));
-        break;
-      }
-
-      case STATE_3:
-      {
-        pHandle->_Super.hElAngle = (int16_t)(pHandle->PhaseShift + S16_120_PHASE_SHIFT + (S16_60_PHASE_SHIFT / 2));
-        break;
-      }
-
-      case STATE_2:
-      {
-        pHandle->_Super.hElAngle = (int16_t)(pHandle->PhaseShift - S16_120_PHASE_SHIFT - (S16_60_PHASE_SHIFT / 2));
-        break;
-      }
-
-      case STATE_6:
-      {
-        pHandle->_Super.hElAngle = (int16_t)(pHandle->PhaseShift - S16_60_PHASE_SHIFT - (S16_60_PHASE_SHIFT / 2));
-        break;
-      }
-
-      case STATE_4:
-      {
-        pHandle->_Super.hElAngle = (int16_t)(pHandle->PhaseShift - (S16_60_PHASE_SHIFT / 2));
-        break;
-      }
-
-      default:
-      {
-        /* Bad hall sensor configutarion so update the speed reliability */
-        pHandle->SensorIsReliable = false;
-        break;
-      }
-    }
     /* Reset incremental value */
     pHandle->IncrementElAngle = 0;
 
